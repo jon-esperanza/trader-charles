@@ -1,6 +1,6 @@
+## MAIN DRIVER FILE
 from stanford_charles import day_high
 import alpaca_trade_api as tradeapi
-import sys
 import pandas as pd
 import pandas_datareader as pdr
 import numpy as np
@@ -16,29 +16,7 @@ from stock import Stock
 
 api = tradeapi.REST(API_KEYS.Alpaca_ID.value, API_KEYS.Alpaca_Secret.value, "https://paper-api.alpaca.markets")
 
-def getFakePositions():
-    tickers = ['ALTA','AAP','ABC', 'ALTG', 'NUZE', 'BLPH', 'TSLA']
-    closes = []
-    highs = []
-    now = dt.datetime.now()
-    start = dt.datetime(now.year - 1, now.month, now.day)
-            
-    for x in tickers:
-        df = round(pdr.get_data_yahoo(x, start, now), 3)
-        df_noToday = df[:-1]
-        day = day_high(df_noToday)
-        closes.append(df['Close'][len(df) - 1])
-        highs.append(day)
-
-    positions = {'Ticker': tickers,
-                'Close': closes,
-                'prev7DayHigh': highs}
-
-    positions_df = pd.DataFrame(positions)
-    return positions_df
-
 #account management
-
 def equity():
     return api.get_account().equity
 def last_equity():
@@ -56,7 +34,6 @@ def canTrade():
         return True
     else:
         return False
-
 def getAccountInfo():
     portfolio = positions()
     orders = api.list_orders()
@@ -100,7 +77,7 @@ def awaitNextLogin(done):
         time.sleep(60)
 
 
-#trade
+#trade management
 def submitOrder(qty, stock, side):
     resp = False
     if (qty > 0):
@@ -131,7 +108,6 @@ def sortEntries(df):
         x += 1
     
     return data.dropna()
-
 def placeEntries(df):
     if canTrade():
         for x in range(0, len(df)):
@@ -140,14 +116,11 @@ def placeEntries(df):
             submitOrder(qty, ticker, 'buy')
     else:
         print("Charles is broke. $" + buying_power)
-
 def runEntries():
     print("}----- Charles is looking for good plays -----{")
     stocks, excel_file = screen()
-    print("/// Found plays")
     print("}----- Charles is now looking for entries -----{")
     buy_stocks = entry_algo(stocks)
-    print("/// Found good entry stocks")
     print("}----- Charles is checking if he can trade -----{")
     can_buy = sortEntries(buy_stocks)
     print("}----- Charles is placing buy orders -----{")
@@ -168,7 +141,6 @@ def sortExits(df):
         stocks.append(stock)
     sell_stocks = exit_algo(stocks)
     return sell_stocks
-
 def placeExits(df):
     for x in df:
         submitOrder(x.shares, x.ticker, 'sell')
@@ -176,13 +148,13 @@ def placeExits(df):
             win += 1
         else:
             loss += 1 """
-
 def runExits():
     print("}----- Charles is checking his positions -----{")
     sell_stocks = sortExits(positions())
     print("}----- Charles is placing sell orders -----{")
     if (len(sell_stocks) > 0):
         placeExits(sell_stocks)
+
 
 def run():
     print()
