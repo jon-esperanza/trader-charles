@@ -27,6 +27,6 @@ I have a lot of future plans for Charles, I would like to create an API around h
 
 Feature | Progress |
 :------------ | :-------------|
-Implement Flask | :white_check_mark |
-Integrate Database | :white_check_mark |
-Design & Develop Frontend | :white_check_mark | 
+Implement Flask | :white_large_square: |
+Integrate Database | :white_large_square: |
+Design & Develop Frontend | :white_large_square: | 
