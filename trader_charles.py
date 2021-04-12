@@ -1,10 +1,14 @@
 ## MAIN DRIVER FILE
-from stanford_charles import day_high
+import flask
+from flask import request, jsonify
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.sql.schema import ForeignKey
 import alpaca_trade_api as tradeapi
 import pandas as pd
 import pandas_datareader as pdr
 import numpy as np
 import datetime as dt
+from datetime import datetime
 import time
 
 
@@ -15,7 +19,7 @@ from screener_charles import screen, screenFV
 from stock import Stock
 
 api = tradeapi.REST(API_KEYS.Alpaca_ID.value, API_KEYS.Alpaca_Secret.value, "https://paper-api.alpaca.markets")
-
+todayString = datetime.now().strftime('%Y-%m-%d')
 #account management
 def equity():
     return api.get_account().equity
@@ -28,34 +32,36 @@ def positions():
 def orders():
     return api.list_orders()
 def watchlist():
-    return api.get_watchlist("756988e8-7ef9-4e09-9fb0-8c6e2bd275f7")
+    return api.get_watchlist(API_KEYS.Alpaca_Watchlist.value)
 def canTrade():
     if int(float(buying_power())) >= 300:
         return True
     else:
         return False
-def getAccountInfo():
+def updateAccountInfo():
+    total = equity()
+    power = buying_power()
     portfolio = positions()
     orders = api.list_orders()
-    watchlist = api.get_watchlist("756988e8-7ef9-4e09-9fb0-8c6e2bd275f7")
-    print("Charles' Account:")
-    print("   $" + equity() + " Equity")
-    print("   $" + buying_power() + " Buying Power")
-    print("   Portfolio:")
+    watchlist = api.get_watchlist(API_KEYS.Alpaca_Watchlist.value)
     for position in portfolio:
-        print("      >" + str(position.qty) + " shares of " + str(position.symbol) + " at " + str(position.avg_entry_price))
-    print("   Pending Orders:")
+        pos = Portfolio(shares=position.qty, ticker=position.symbol, avg_entry=position.avg_entry_price, acc_id=todayString)
+        db.session.add(pos)
     for order in orders:
-        print("      > " + str(order.qty) + " shares of $" + str(order.symbol))
-    print("   Watchlist:")
+        orde = Orders(shares=order.qty, ticker=order.symbol, acc_id=todayString)
+        db.session.add(orde)
     for x in watchlist.assets:
-        print ("      > $" + str(x['symbol']))
+        wat = Watchlist(ticker=x['symbol'], acc_id=todayString)
+        db.session.add(wat)
+    acc = Account(date=todayString, equity=total, buying_power=power)
+    db.session.add(acc)
+    db.session.commit()
+    
 
 
 #market management
 def isOpen():
     return api.get_clock().is_open
-
 def minUntilOpen():
     clock = api.get_clock()
     openingTime = clock.next_open.replace(tzinfo=dt.timezone.utc).timestamp()
@@ -66,7 +72,6 @@ def minUntilOpen():
     else:
         print("Market is currently open")
     return timeToOpen
-
 def awaitNextLogin(done):
     while (done == True):
         if (minUntilOpen() == 888):
@@ -125,7 +130,6 @@ def runEntries():
     can_buy = sortEntries(buy_stocks)
     print("}----- Charles is placing buy orders -----{")
     placeEntries(can_buy)
-
 def sortExits(df):
     stocks = []
     for position in df:
@@ -141,13 +145,15 @@ def sortExits(df):
         stocks.append(stock)
     sell_stocks = exit_algo(stocks)
     return sell_stocks
+#TODO store trades
 def placeExits(df):
+    acc = Account.query.filter_by(date=todayString).first()
     for x in df:
         submitOrder(x.shares, x.ticker, 'sell')
-"""         if x.pl > 0:
-            win += 1
+        if x.pl > 0:
+            acc.win = Account.wins + 1
         else:
-            loss += 1 """
+            acc.loss = Account.losses + 1
 def runExits():
     print("}----- Charles is checking his positions -----{")
     sell_stocks = sortExits(positions())
@@ -156,14 +162,119 @@ def runExits():
         placeExits(sell_stocks)
 
 
-def run():
-    print()
-    getAccountInfo()
-    print()
+def login():
     runExits()
     runEntries()
-    print()
-    getAccountInfo()
+    updateAccountInfo()
 
-run()
+# API
+app = flask.Flask(__name__)
+app.config["DEBUG"] = True
+app.config["SQLALCHEMY_DATABASE_URI"] = 'sqlite:///:memory:'
+db = SQLAlchemy(app)
 
+
+class Account(db.Model):
+    __tablename__ = 'account'
+    date = db.Column(db.String, primary_key=True)
+    equity = db.Column(db.Float, nullable=False)
+    wins = db.Column(db.Float, default=2)
+    losses = db.Column(db.Float, default=1)
+    buying_power = db.Column(db.Float, nullable=False)
+    portfolio = db.relationship("Portfolio", backref='date', lazy=True)
+    orders = db.relationship("Orders", backref='date', lazy=True)
+    watchlist = db.relationship("Watchlist", backref='date', lazy=True)
+    @property
+    def serialize(self):
+       """Return object data in easily serializable format"""
+       return {
+           'date'           : self.date,
+           'equity'         : self.equity,
+           'buying_power'   : self.buying_power,
+           'win percentage' : round(float(self.wins / (self.wins + self.losses)), 2),
+           'portfolio'      : self.serialize_portfolio(),
+           'orders'         : self.serialize_orders(),
+           'watchlist'      : self.serialize_watchlist()
+       }
+    def serialize_portfolio(self):
+        return [item.serialize for item in self.portfolio]
+    def serialize_orders(self):
+        return [item.serialize for item in self.orders]
+    def serialize_watchlist(self):
+        return [item.serialize for item in self.watchlist]
+    def __repr__(self):
+        return '<User %r>' % self.username
+class Portfolio(db.Model):
+    __tablename__ = 'portfolio'
+    shares = db.Column(db.Integer)
+    ticker = db.Column(db.String, primary_key=True)
+    avg_entry = db.Column(db.Float)
+    acc_id = db.Column(db.Integer, ForeignKey('account.date'), primary_key=True)
+    @property
+    def serialize(self):
+       """Return object data in easily serializable format"""
+       return {
+           'ticker'         : self.ticker,
+           'shares'         : self.shares,
+           'average entry'  : self.avg_entry
+       }
+class Orders(db.Model):
+    __tablename__ = 'orders'
+    shares = db.Column(db.Integer)
+    ticker = db.Column(db.String, primary_key=True)
+    acc_id = db.Column(db.Integer, ForeignKey('account.date'), primary_key=True)
+    @property
+    def serialize(self):
+       """Return object data in easily serializable format"""
+       return {
+           'ticker'         : self.ticker,
+           'shares'         : self.shares,
+           'average entry'  : self.avg_entry
+       }
+class Watchlist(db.Model):
+    __tablename__ = 'watchlist'
+    ticker = db.Column(db.String, primary_key=True)
+    acc_id = db.Column(db.Integer, ForeignKey('account.date'), primary_key=True)
+    @property
+    def serialize(self):
+       """Return object data in easily serializable format"""
+       return {
+           'ticker'         : self.ticker
+       }
+
+def init_db():
+    db.drop_all()
+    db.create_all()
+    updateAccountInfo()
+
+## ENDPOINTS
+@app.errorhandler(404)
+def page_not_found(e):
+    return "<h1>404</h1><p>The resource could not be found.</p>", 404
+
+@app.route('/', methods=['GET'])
+def home():
+    return '''<h1>This is Trader Charles' API</h1>
+    <p>A prototype API for Charles' paper trading account.</p> '''
+
+@app.route('/account', methods=['GET'])
+def account():
+    charles = Account.query.filter_by(date=todayString).first()
+    return jsonify(charles.serialize)
+@app.route('/account/history', methods=['GET'])
+def account_history():
+    history = [i.serialize for i in Account.query.all()]
+    return jsonify(history)
+
+#TODO: schedule this task
+@app.route('/login', methods=['GET'])
+def start():
+    login()
+    return "<h1>Charles has logged on</h1>"
+
+@app.route('/today', methods=['GET'])
+def today():
+    return todayString
+
+init_db()
+app.run()
