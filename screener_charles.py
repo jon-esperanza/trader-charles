@@ -9,8 +9,6 @@ from progress.bar import Bar
 from stock import Stock
 
 
-url = 'https://api.tdameritrade.com/v1/instruments'
-
 def screenFV():
     foverview = Overview()
     filters_dict = {'Price':'$5 to $20', '50-Day Simple Moving Average':'Price above SMA50', '200-Day Simple Moving Average':'SMA200 below SMA50', 'PEG':'Under 1', 'Current Volume':'Over 400K', 'Relative Volume':'Over 1'}

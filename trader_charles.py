@@ -2,6 +2,7 @@
 import flask
 from flask import request, jsonify
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate, MigrateCommand
 from sqlalchemy.sql.schema import ForeignKey
 import alpaca_trade_api as tradeapi
 import pandas as pd
@@ -20,6 +21,7 @@ from stock import Stock
 
 api = tradeapi.REST(API_KEYS.Alpaca_ID.value, API_KEYS.Alpaca_Secret.value, "https://paper-api.alpaca.markets")
 todayString = datetime.now().strftime('%Y-%m-%d')
+
 #account management
 def equity():
     return api.get_account().equity
@@ -38,6 +40,8 @@ def canTrade():
         return True
     else:
         return False
+
+#TODO: add robust updates to table if date already exists in postgres.
 def updateAccountInfo():
     total = equity()
     power = buying_power()
@@ -145,7 +149,7 @@ def sortExits(df):
         stocks.append(stock)
     sell_stocks = exit_algo(stocks)
     return sell_stocks
-#TODO store trades
+#TODO store trades in a table for data collection
 def placeExits(df):
     acc = Account.query.filter_by(date=todayString).first()
     for x in df:
@@ -162,6 +166,7 @@ def runExits():
         placeExits(sell_stocks)
 
 
+#TODO: schedule this task
 def login():
     runExits()
     runEntries()
@@ -170,9 +175,10 @@ def login():
 # API
 app = flask.Flask(__name__)
 app.config["DEBUG"] = True
-app.config["SQLALCHEMY_DATABASE_URI"] = 'sqlite:///:memory:'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config["SQLALCHEMY_DATABASE_URI"] = 'postgresql://lkokthyj:kGT3VtQ_uuObWKos-DTCWlB88a5buFkl@queenie.db.elephantsql.com:5432/lkokthyj'
 db = SQLAlchemy(app)
-
+migrate = Migrate(app, db)
 
 class Account(db.Model):
     __tablename__ = 'account'
@@ -184,6 +190,7 @@ class Account(db.Model):
     portfolio = db.relationship("Portfolio", backref='date', lazy=True)
     orders = db.relationship("Orders", backref='date', lazy=True)
     watchlist = db.relationship("Watchlist", backref='date', lazy=True)
+    
     @property
     def serialize(self):
        """Return object data in easily serializable format"""
@@ -209,7 +216,8 @@ class Portfolio(db.Model):
     shares = db.Column(db.Integer)
     ticker = db.Column(db.String, primary_key=True)
     avg_entry = db.Column(db.Float)
-    acc_id = db.Column(db.Integer, ForeignKey('account.date'), primary_key=True)
+    acc_id = db.Column(db.String, ForeignKey('account.date'), primary_key=True)
+    
     @property
     def serialize(self):
        """Return object data in easily serializable format"""
@@ -222,7 +230,7 @@ class Orders(db.Model):
     __tablename__ = 'orders'
     shares = db.Column(db.Integer)
     ticker = db.Column(db.String, primary_key=True)
-    acc_id = db.Column(db.Integer, ForeignKey('account.date'), primary_key=True)
+    acc_id = db.Column(db.String, ForeignKey('account.date'), primary_key=True)
     @property
     def serialize(self):
        """Return object data in easily serializable format"""
@@ -234,7 +242,7 @@ class Orders(db.Model):
 class Watchlist(db.Model):
     __tablename__ = 'watchlist'
     ticker = db.Column(db.String, primary_key=True)
-    acc_id = db.Column(db.Integer, ForeignKey('account.date'), primary_key=True)
+    acc_id = db.Column(db.String, ForeignKey('account.date'), primary_key=True)
     @property
     def serialize(self):
        """Return object data in easily serializable format"""
@@ -243,20 +251,22 @@ class Watchlist(db.Model):
        }
 
 def init_db():
-    db.drop_all()
     db.create_all()
     updateAccountInfo()
+
+
+#To reduce traffic into postgres. 
+#TODO: IDEA: Schedule an update database task every 10/15/30 mins and hold query inside a local variable
+#            return that local variable for endpoints.
 
 ## ENDPOINTS
 @app.errorhandler(404)
 def page_not_found(e):
     return "<h1>404</h1><p>The resource could not be found.</p>", 404
-
 @app.route('/', methods=['GET'])
 def home():
     return '''<h1>This is Trader Charles' API</h1>
     <p>A prototype API for Charles' paper trading account.</p> '''
-
 @app.route('/account', methods=['GET'])
 def account():
     charles = Account.query.filter_by(date=todayString).first()
@@ -265,16 +275,10 @@ def account():
 def account_history():
     history = [i.serialize for i in Account.query.all()]
     return jsonify(history)
-
-#TODO: schedule this task
-@app.route('/login', methods=['GET'])
-def start():
-    login()
-    return "<h1>Charles has logged on</h1>"
-
 @app.route('/today', methods=['GET'])
 def today():
     return todayString
 
-init_db()
-app.run()
+if __name__ == "__main__":
+    init_db()
+    app.run()
