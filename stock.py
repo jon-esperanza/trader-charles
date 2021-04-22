@@ -18,7 +18,6 @@ class Stock(object):
         self.entry_price = 0
         self.cost_basis = 0
         self.marketvalue = 0
-        self.profit = 0
         self.pl = 0
         self.plpc = 0
         #fundamentals

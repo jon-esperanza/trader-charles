@@ -41,18 +41,23 @@ def canTrade():
     else:
         return False
 
-#TODO: add robust updates to table if date already exists in postgres.
 def updateAccountInfo():
     total = equity()
     power = buying_power()
     portfolio = positions()
     orders = api.list_orders()
     watchlist = api.get_watchlist(API_KEYS.Alpaca_Watchlist.value)
+    acc = Account.query.filter_by(date=todayString).first()
+    if (acc is not None):
+        Portfolio.query.filter_by(acc_id=todayString).delete()
+        Orders.query.filter_by(acc_id=todayString).delete()
+        Watchlist.query.filter_by(acc_id=todayString).delete()
+        Account.query.filter_by(date=todayString).delete()
     for position in portfolio:
         pos = Portfolio(shares=position.qty, ticker=position.symbol, avg_entry=position.avg_entry_price, acc_id=todayString)
         db.session.add(pos)
     for order in orders:
-        orde = Orders(shares=order.qty, ticker=order.symbol, acc_id=todayString)
+        orde = Order(shares=order.qty, ticker=order.symbol, acc_id=todayString)
         db.session.add(orde)
     for x in watchlist.assets:
         wat = Watchlist(ticker=x['symbol'], acc_id=todayString)
@@ -149,15 +154,18 @@ def sortExits(df):
         stocks.append(stock)
     sell_stocks = exit_algo(stocks)
     return sell_stocks
-#TODO store trades in a table for data collection
+#TODO CHECK IF THIS WORKS
 def placeExits(df):
     acc = Account.query.filter_by(date=todayString).first()
     for x in df:
         submitOrder(x.shares, x.ticker, 'sell')
         if x.pl > 0:
-            acc.win = Account.wins + 1
+            acc.wins = Account.wins + 1
         else:
-            acc.loss = Account.losses + 1
+            acc.losses = Account.losses + 1
+        exitStock = Trades(date= todayString, ticker= x.ticker, company= x.company, sector= x.sector, industry= x.industry, country= x.country, exchange= x.exchange, close= x.close, shares= x.shares, entry_price= x.entry_price, cost_basis= x.cost_basis, marketvalue= x.marketvalue, pl= x.pl, plpc= x.plpc)
+        db.session.add(exitStock)
+    db.session.commit()
 def runExits():
     print("}----- Charles is checking his positions -----{")
     sell_stocks = sortExits(positions())
@@ -237,7 +245,6 @@ class Orders(db.Model):
        return {
            'ticker'         : self.ticker,
            'shares'         : self.shares,
-           'average entry'  : self.avg_entry
        }
 class Watchlist(db.Model):
     __tablename__ = 'watchlist'
@@ -248,6 +255,42 @@ class Watchlist(db.Model):
        """Return object data in easily serializable format"""
        return {
            'ticker'         : self.ticker
+       }
+
+class Trades(db.Model):
+    __tablename__ = 'trades'
+    date = db.Column(db.String, primary_key=True, nullable=False)
+    ticker = db.Column(db.String, primary_key=True, nullable=False)
+    company = db.Column(db.String)
+    sector = db.Column(db.String)
+    industry = db.Column(db.String)
+    country = db.Column(db.String)
+    exchange = db.Column(db.String)
+    close = db.Column(db.Float)
+    shares = db.Column(db.Integer)
+    entry_price = db.Column(db.Float)
+    cost_basis = db.Column(db.Float)
+    marketvalue = db.Column(db.Float)
+    pl = db.Column(db.Float)
+    plpc = db.Column(db.Float, nullable=True)
+    @property
+    def serialize(self):
+       """Return object data in easily serializable format"""
+       return {
+           'date'           : self.date,
+           'ticker'         : self.ticker,
+           'company'        : self.company,
+           'sector'         : self.sector,
+           'industry'       : self.industry,
+           'country'        : self.country,
+           'exchange'       : self.exchange,
+           'close'          : self.close,
+           'shares'         : self.shares,
+           'entry_price'    : self.entry_price,
+           'cost_basis'     : self.cost_basis,
+           'marketvalue'    : self.marketvalue,
+           'pl'             : self.pl,
+           'plpc'           : self.plpc
        }
 
 def init_db():
@@ -267,6 +310,7 @@ def page_not_found(e):
 def home():
     return '''<h1>This is Trader Charles' API</h1>
     <p>A prototype API for Charles' paper trading account.</p> '''
+#TODO: implement websocket for stream directly from API
 @app.route('/account', methods=['GET'])
 def account():
     charles = Account.query.filter_by(date=todayString).first()
@@ -274,6 +318,10 @@ def account():
 @app.route('/account/history', methods=['GET'])
 def account_history():
     history = [i.serialize for i in Account.query.all()]
+    return jsonify(history)
+@app.route('/trades', methods=['GET'])
+def trades_history():
+    history = [i.serialize for i in Trades.query.all()]
     return jsonify(history)
 @app.route('/today', methods=['GET'])
 def today():
