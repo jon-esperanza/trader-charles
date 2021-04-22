@@ -184,7 +184,7 @@ def login():
 app = flask.Flask(__name__)
 app.config["DEBUG"] = True
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config["SQLALCHEMY_DATABASE_URI"] = 'postgresql://lkokthyj:kGT3VtQ_uuObWKos-DTCWlB88a5buFkl@queenie.db.elephantsql.com:5432/lkokthyj'
+app.config["SQLALCHEMY_DATABASE_URI"] = API_KEYS.Postgres_URI.value()
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 

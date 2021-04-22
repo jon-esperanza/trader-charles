@@ -1,0 +1,11 @@
+flask
+flask_sqlalchemy
+flask_migrate
+pandas
+pandas_datareader
+numpy
+datetime
+finvizfinance
+progress
+xlsxwriter
+psycopg2-binary
