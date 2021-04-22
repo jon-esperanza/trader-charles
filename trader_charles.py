@@ -327,6 +327,5 @@ def trades_history():
 def today():
     return todayString
 
-if __name__ == "__main__":
-    init_db()
-    app.run()
+init_db()
+app.run()
