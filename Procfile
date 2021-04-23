@@ -1,2 +1,2 @@
-web: gunicorn app:app
+web: gunicorn trader_charles:app
 web: gunicorn --log-file=- run:app
