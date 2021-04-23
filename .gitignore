@@ -6,7 +6,10 @@ __pycache__/
 # C extensions
 *.so
 
-bookkeeper_charles.py
+
+Procfile
+.DS_Store
+requirements.txt
 
 # Distribution / packaging
 .Python
