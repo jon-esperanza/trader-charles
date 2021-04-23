@@ -1,5 +1,6 @@
 flask
 gunicorn
+alpaca-trade-api
 flask_sqlalchemy
 flask_migrate
 pandas
