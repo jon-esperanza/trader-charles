@@ -4,6 +4,7 @@ gunicorn
 alpaca-trade-api
 flask_sqlalchemy
 flask_migrate
+flask_crontab
 pandas
 pandas_datareader
 numpy

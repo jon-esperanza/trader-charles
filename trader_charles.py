@@ -185,11 +185,6 @@ class Trades(db.Model):
 def init_db():
     db.create_all()
 
-
-#To reduce traffic into postgres. 
-#TODO: IDEA: Schedule an update database task every 10/15/30 mins and hold query inside a local variable
-#            return that local variable for endpoints.
-
 ## ENDPOINTS
 @app.errorhandler(404)
 def page_not_found(e):
