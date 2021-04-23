@@ -2,7 +2,6 @@
 import flask
 from flask import request, jsonify
 from flask_sqlalchemy import SQLAlchemy
-from flask_crontab import Crontab
 from flask_migrate import Migrate, MigrateCommand
 from sqlalchemy.sql.schema import ForeignKey
 import alpaca_trade_api as tradeapi
@@ -10,7 +9,7 @@ import pandas as pd
 import pandas_datareader as pdr
 import numpy as np
 import datetime as dt
-from datetime import datetime
+from datetime import datetime, timezone
 import time
 import os
 from os.path import join, dirname
@@ -26,7 +25,7 @@ from stock import Stock
 Alpaca_ID = os.getenv('Alpaca_ID')
 Alpaca_Secret = os.getenv('Alpaca_Secret')
 api = tradeapi.REST(os.getenv('Alpaca_ID'), os.getenv('Alpaca_Secret'), "https://paper-api.alpaca.markets")
-todayString = datetime.now().strftime('%Y-%m-%d')
+todayString = datetime.now(timezone.est).strftime('%Y-%m-%d')
 
 #account management
 Alpaca_Watchlist = os.environ.get('Alpaca_Watchlist')
@@ -137,10 +136,8 @@ app = flask.Flask(__name__)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config["SQLALCHEMY_DATABASE_URI"] = Postgres_URI
 db = SQLAlchemy(app)
-crontab = Crontab(app)
 migrate = Migrate(app, db)
 
-@crontab.job(minute="0", hour="6", day="*", month="*", day_of_week="*")
 def login():
     runExits()
     runEntries()
