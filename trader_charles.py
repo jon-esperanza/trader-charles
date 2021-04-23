@@ -17,7 +17,7 @@ from os.path import join, dirname
 
 from dotenv import load_dotenv
 dotenv_path = join(dirname(__file__), '.env')
-load_dotenv()
+load_dotenv(dotenv_path)
 from algo_charles import entry_algo, exit_algo
 from screener_charles import screen, screenFV
 from stock import Stock
