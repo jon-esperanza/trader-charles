@@ -12,9 +12,11 @@ import datetime as dt
 from datetime import datetime
 import time
 import os
+from os.path import join, dirname
 
 
 from dotenv import load_dotenv
+dotenv_path = join(dirname(__file__), '.env')
 load_dotenv()
 from algo_charles import entry_algo, exit_algo
 from screener_charles import screen, screenFV
