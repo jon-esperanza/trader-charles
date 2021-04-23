@@ -4,6 +4,7 @@ from flask import request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate, MigrateCommand
 from sqlalchemy.sql.schema import ForeignKey
+from sqlalchemy import desc
 import alpaca_trade_api as tradeapi
 import pandas as pd
 import pandas_datareader as pdr
@@ -20,11 +21,9 @@ from dotenv import load_dotenv
 dotenv_path = join(dirname(__file__), '.env')
 load_dotenv(dotenv_path)
 from algo_charles import entry_algo, exit_algo
-from screener_charles import screen, screenFV
+from screener_charles import screen
 from stock import Stock
 
-Alpaca_ID = os.getenv('Alpaca_ID')
-Alpaca_Secret = os.getenv('Alpaca_Secret')
 api = tradeapi.REST(os.getenv('Alpaca_ID'), os.getenv('Alpaca_Secret'), "https://paper-api.alpaca.markets")
 todayString = datetime.now(timezone('US/Eastern')).strftime('%Y-%m-%d')
 
@@ -89,7 +88,7 @@ def placeEntries(df):
         print("Charles is broke. $" + buying_power)
 def runEntries():
     print("}----- Charles is looking for good plays -----{")
-    stocks, excel_file = screen()
+    stocks = screen()
     print("}----- Charles is now looking for entries -----{")
     buy_stocks = entry_algo(stocks)
     print("}----- Charles is checking if he can trade -----{")
@@ -120,7 +119,7 @@ def placeExits(df):
             acc.wins = Account.wins + 1
         else:
             acc.losses = Account.losses + 1
-        exitStock = Trades(date= todayString, ticker= x.ticker, company= x.company, sector= x.sector, industry= x.industry, country= x.country, exchange= x.exchange, close= x.close, shares= x.shares, entry_price= x.entry_price, cost_basis= x.cost_basis, marketvalue= x.marketvalue, pl= x.pl, plpc= x.plpc)
+        exitStock = Trades(date= todayString, ticker= x.ticker, exchange= x.exchange, close= x.close, shares= x.shares, entry_price= x.entry_price, cost_basis= x.cost_basis, marketvalue= x.marketvalue, pl= x.pl, plpc= x.plpc)
         db.session.add(exitStock)
     db.session.commit()
 def runExits():
@@ -147,10 +146,6 @@ class Trades(db.Model):
     __tablename__ = 'trades'
     date = db.Column(db.String, primary_key=True, nullable=False)
     ticker = db.Column(db.String, primary_key=True, nullable=False)
-    company = db.Column(db.String)
-    sector = db.Column(db.String)
-    industry = db.Column(db.String)
-    country = db.Column(db.String)
     exchange = db.Column(db.String)
     close = db.Column(db.Float)
     shares = db.Column(db.Integer)
@@ -165,10 +160,6 @@ class Trades(db.Model):
        return {
            'date'           : self.date,
            'ticker'         : self.ticker,
-           'company'        : self.company,
-           'sector'         : self.sector,
-           'industry'       : self.industry,
-           'country'        : self.country,
            'exchange'       : self.exchange,
            'close'          : self.close,
            'shares'         : self.shares,
@@ -195,6 +186,22 @@ def home():
 def trades_history():
     history = [i.serialize for i in Trades.query.all()]
     return jsonify(history)
+@app.route('/trades/best', methods=['GET'])
+def trades_best():
+    best = [i.serialize for i in Trades.query.order_by(desc(Trades.pl)).limit(5)]
+    return jsonify(best)
+@app.route('/trades/worst', methods=['GET'])
+def trades_worst():
+    worst = [i.serialize for i in Trades.query.order_by(Trades.pl).limit(5)]
+    return jsonify(worst)
+@app.route('/trades/record', methods=['GET'])
+def trades_record():
+    wins = Trades.query.filter(Trades.pl > 0).count()
+    losses = Trades.query.filter(Trades.pl < 0).count()
+    record = {'wins' : wins,
+              'losses' : losses,
+              'win_percentage' : round((float)(wins/(wins+losses)), 2)}
+    return jsonify(record)
 @app.route('/today', methods=['GET'])
 def today():
     return todayString

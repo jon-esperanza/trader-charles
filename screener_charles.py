@@ -63,7 +63,6 @@ def createStockData(df):
         stocks.append(stock)
         bar.next()
     stockData = pd.DataFrame(stocks)
-    writeStockFile(stockData)
     bar.finish()
     return stockData
 
@@ -105,5 +104,4 @@ def loadStockFile(file_name):
 def screen():
     df = screenFV()
     stocks_done = toStockExcelData(createStockData(df))
-    excel_file = writeStockExcel(stocks_done)
-    return stocks_done, excel_file
+    return stocks_done
