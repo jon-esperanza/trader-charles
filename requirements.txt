@@ -1,4 +1,5 @@
 flask
+python-dotenv
 gunicorn
 alpaca-trade-api
 flask_sqlalchemy
