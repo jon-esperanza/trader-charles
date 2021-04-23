@@ -11,18 +11,22 @@ import numpy as np
 import datetime as dt
 from datetime import datetime
 import time
+import os
 
 
-
-from bookkeeper_charles import API_KEYS
+from dotenv import load_dotenv
+load_dotenv()
 from algo_charles import entry_algo, exit_algo
 from screener_charles import screen, screenFV
 from stock import Stock
 
-api = tradeapi.REST(API_KEYS.Alpaca_ID.value, API_KEYS.Alpaca_Secret.value, "https://paper-api.alpaca.markets")
+Alpaca_ID = os.environ.get('Alpaca_ID')
+Alpaca_Secret = os.environ.get('Alpaca_Secret')
+api = tradeapi.REST(Alpaca_ID, Alpaca_Secret, "https://paper-api.alpaca.markets")
 todayString = datetime.now().strftime('%Y-%m-%d')
 
 #account management
+Alpaca_Watchlist = os.environ.get('Alpaca_Watchlist')
 def equity():
     return api.get_account().equity
 def last_equity():
@@ -34,7 +38,7 @@ def positions():
 def orders():
     return api.list_orders()
 def watchlist():
-    return api.get_watchlist(API_KEYS.Alpaca_Watchlist.value)
+    return api.get_watchlist(Alpaca_Watchlist)
 def canTrade():
     if int(float(buying_power())) >= 300:
         return True
@@ -46,7 +50,7 @@ def updateAccountInfo():
     power = buying_power()
     portfolio = positions()
     orders = api.list_orders()
-    watchlist = api.get_watchlist(API_KEYS.Alpaca_Watchlist.value)
+    watchlist = api.get_watchlist(Alpaca_Watchlist)
     acc = Account.query.filter_by(date=todayString).first()
     if (acc is not None):
         Portfolio.query.filter_by(acc_id=todayString).delete()
@@ -181,10 +185,11 @@ def login():
     updateAccountInfo()
 
 # API
+Postgres_URI = os.environ.get('Postgres_URI')
 app = flask.Flask(__name__)
 app.config["DEBUG"] = True
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config["SQLALCHEMY_DATABASE_URI"] = API_KEYS.Postgres_URI.value()
+app.config["SQLALCHEMY_DATABASE_URI"] = Postgres_URI
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
