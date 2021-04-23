@@ -22,8 +22,8 @@ from algo_charles import entry_algo, exit_algo
 from screener_charles import screen, screenFV
 from stock import Stock
 
-Alpaca_ID = os.environ.get('Alpaca_ID')
-Alpaca_Secret = os.environ.get('Alpaca_Secret')
+Alpaca_ID = os.getenv('Alpaca_ID')
+Alpaca_Secret = os.getenv('Alpaca_Secret')
 api = tradeapi.REST(Alpaca_ID, Alpaca_Secret, "https://paper-api.alpaca.markets")
 todayString = datetime.now().strftime('%Y-%m-%d')
 
