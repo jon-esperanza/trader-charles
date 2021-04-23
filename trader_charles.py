@@ -180,7 +180,11 @@ def page_not_found(e):
 @app.route('/', methods=['GET'])
 def home():
     return '''<h1>This is Trader Charles' API</h1>
-    <p>A prototype API for Charles' paper trading account.</p> '''
+    <p>A prototype API for Charles' paper trading account.</p> 
+    <p><strong>/trades</strong> - returns all trades in database</p>
+    <p><strong>/trades/best</strong> - returns the 5 most profitable trades in database</p>
+    <p><strong>/trades/worst</strong> - returns the 5 least profitable trades in database</p>
+    <p><strong>/trades/record</strong> - returns charles' trading record</p>'''
 #TODO: implement websocket for stream directly from API
 @app.route('/trades', methods=['GET'])
 def trades_history():
