@@ -2,6 +2,7 @@
 import flask
 from flask import request, jsonify
 from flask_sqlalchemy import SQLAlchemy
+from flask_crontab import Crontab
 from flask_migrate import Migrate, MigrateCommand
 from sqlalchemy.sql.schema import ForeignKey
 import alpaca_trade_api as tradeapi
@@ -46,56 +47,6 @@ def canTrade():
         return True
     else:
         return False
-
-def updateAccountInfo():
-    total = equity()
-    power = buying_power()
-    portfolio = positions()
-    orders = api.list_orders()
-    watchlist = api.get_watchlist(Alpaca_Watchlist)
-    acc = Account.query.filter_by(date=todayString).first()
-    if (acc is not None):
-        Portfolio.query.filter_by(acc_id=todayString).delete()
-        Orders.query.filter_by(acc_id=todayString).delete()
-        Watchlist.query.filter_by(acc_id=todayString).delete()
-        Account.query.filter_by(date=todayString).delete()
-    for position in portfolio:
-        pos = Portfolio(shares=position.qty, ticker=position.symbol, avg_entry=position.avg_entry_price, acc_id=todayString)
-        db.session.add(pos)
-    for order in orders:
-        orde = Order(shares=order.qty, ticker=order.symbol, acc_id=todayString)
-        db.session.add(orde)
-    for x in watchlist.assets:
-        wat = Watchlist(ticker=x['symbol'], acc_id=todayString)
-        db.session.add(wat)
-    acc = Account(date=todayString, equity=total, buying_power=power)
-    db.session.add(acc)
-    db.session.commit()
-    
-
-
-#market management
-def isOpen():
-    return api.get_clock().is_open
-def minUntilOpen():
-    clock = api.get_clock()
-    openingTime = clock.next_open.replace(tzinfo=dt.timezone.utc).timestamp()
-    currTime = clock.timestamp.replace(tzinfo=dt.timezone.utc).timestamp()
-    timeToOpen = int((openingTime - currTime) / 60)
-    if (timeToOpen > 0):
-        print(str(timeToOpen) + " minutes til market open.")
-    else:
-        print("Market is currently open")
-    return timeToOpen
-def awaitNextLogin(done):
-    while (done == True):
-        if (minUntilOpen() == 888):
-            print("Charles is logging on...")
-            done = False
-            break
-        print(str(minUntilOpen()) + " minutes til market open.")
-        time.sleep(60)
-
 
 #trade management
 def submitOrder(qty, stock, side):
@@ -181,88 +132,19 @@ def runExits():
 
 
 #TODO: schedule this task
+@crontab.job(minute="0", hour="6", day="*", month="*", day_of_week="*")
 def login():
     runExits()
     runEntries()
-    updateAccountInfo()
 
 # API
 Postgres_URI = os.environ.get('Postgres_URI')
 app = flask.Flask(__name__)
-app.config["DEBUG"] = True
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config["SQLALCHEMY_DATABASE_URI"] = Postgres_URI
 db = SQLAlchemy(app)
+crontab = Crontab(app)
 migrate = Migrate(app, db)
-
-class Account(db.Model):
-    __tablename__ = 'account'
-    date = db.Column(db.String, primary_key=True)
-    equity = db.Column(db.Float, nullable=False)
-    wins = db.Column(db.Float, default=2)
-    losses = db.Column(db.Float, default=1)
-    buying_power = db.Column(db.Float, nullable=False)
-    portfolio = db.relationship("Portfolio", backref='date', lazy=True)
-    orders = db.relationship("Orders", backref='date', lazy=True)
-    watchlist = db.relationship("Watchlist", backref='date', lazy=True)
-    
-    @property
-    def serialize(self):
-       """Return object data in easily serializable format"""
-       return {
-           'date'           : self.date,
-           'equity'         : self.equity,
-           'buying_power'   : self.buying_power,
-           'win percentage' : round(float(self.wins / (self.wins + self.losses)), 2),
-           'portfolio'      : self.serialize_portfolio(),
-           'orders'         : self.serialize_orders(),
-           'watchlist'      : self.serialize_watchlist()
-       }
-    def serialize_portfolio(self):
-        return [item.serialize for item in self.portfolio]
-    def serialize_orders(self):
-        return [item.serialize for item in self.orders]
-    def serialize_watchlist(self):
-        return [item.serialize for item in self.watchlist]
-    def __repr__(self):
-        return '<User %r>' % self.username
-class Portfolio(db.Model):
-    __tablename__ = 'portfolio'
-    shares = db.Column(db.Integer)
-    ticker = db.Column(db.String, primary_key=True)
-    avg_entry = db.Column(db.Float)
-    acc_id = db.Column(db.String, ForeignKey('account.date'), primary_key=True)
-    
-    @property
-    def serialize(self):
-       """Return object data in easily serializable format"""
-       return {
-           'ticker'         : self.ticker,
-           'shares'         : self.shares,
-           'average entry'  : self.avg_entry
-       }
-class Orders(db.Model):
-    __tablename__ = 'orders'
-    shares = db.Column(db.Integer)
-    ticker = db.Column(db.String, primary_key=True)
-    acc_id = db.Column(db.String, ForeignKey('account.date'), primary_key=True)
-    @property
-    def serialize(self):
-       """Return object data in easily serializable format"""
-       return {
-           'ticker'         : self.ticker,
-           'shares'         : self.shares,
-       }
-class Watchlist(db.Model):
-    __tablename__ = 'watchlist'
-    ticker = db.Column(db.String, primary_key=True)
-    acc_id = db.Column(db.String, ForeignKey('account.date'), primary_key=True)
-    @property
-    def serialize(self):
-       """Return object data in easily serializable format"""
-       return {
-           'ticker'         : self.ticker
-       }
 
 class Trades(db.Model):
     __tablename__ = 'trades'
@@ -302,7 +184,6 @@ class Trades(db.Model):
 
 def init_db():
     db.create_all()
-    updateAccountInfo()
 
 
 #To reduce traffic into postgres. 
@@ -318,14 +199,6 @@ def home():
     return '''<h1>This is Trader Charles' API</h1>
     <p>A prototype API for Charles' paper trading account.</p> '''
 #TODO: implement websocket for stream directly from API
-@app.route('/account', methods=['GET'])
-def account():
-    charles = Account.query.filter_by(date=todayString).first()
-    return jsonify(charles.serialize)
-@app.route('/account/history', methods=['GET'])
-def account_history():
-    history = [i.serialize for i in Account.query.all()]
-    return jsonify(history)
 @app.route('/trades', methods=['GET'])
 def trades_history():
     history = [i.serialize for i in Trades.query.all()]
