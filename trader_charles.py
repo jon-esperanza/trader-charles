@@ -131,12 +131,6 @@ def runExits():
         placeExits(sell_stocks)
 
 
-#TODO: schedule this task
-@crontab.job(minute="0", hour="6", day="*", month="*", day_of_week="*")
-def login():
-    runExits()
-    runEntries()
-
 # API
 Postgres_URI = os.environ.get('Postgres_URI')
 app = flask.Flask(__name__)
@@ -145,6 +139,11 @@ app.config["SQLALCHEMY_DATABASE_URI"] = Postgres_URI
 db = SQLAlchemy(app)
 crontab = Crontab(app)
 migrate = Migrate(app, db)
+
+@crontab.job(minute="0", hour="6", day="*", month="*", day_of_week="*")
+def login():
+    runExits()
+    runEntries()
 
 class Trades(db.Model):
     __tablename__ = 'trades'
