@@ -1,4 +1,5 @@
 flask
+gunicorn
 flask_sqlalchemy
 flask_migrate
 pandas
