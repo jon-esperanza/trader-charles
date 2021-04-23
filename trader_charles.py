@@ -24,7 +24,7 @@ from stock import Stock
 
 Alpaca_ID = os.getenv('Alpaca_ID')
 Alpaca_Secret = os.getenv('Alpaca_Secret')
-api = tradeapi.REST(Alpaca_ID, Alpaca_Secret, "https://paper-api.alpaca.markets")
+api = tradeapi.REST(os.getenv('Alpaca_ID'), os.getenv('Alpaca_Secret'), "https://paper-api.alpaca.markets")
 todayString = datetime.now().strftime('%Y-%m-%d')
 
 #account management
