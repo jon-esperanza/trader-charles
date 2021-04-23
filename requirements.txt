@@ -5,6 +5,7 @@ alpaca-trade-api
 flask_sqlalchemy
 flask_migrate
 pandas
+pytz
 pandas_datareader
 numpy
 datetime
