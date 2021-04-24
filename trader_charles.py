@@ -139,32 +139,7 @@ app.config["SQLALCHEMY_DATABASE_URI"] = Postgres_URI
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
-# CACHE
-servers = os.environ.get('MEMCACHIER_SERVERS', '').split(',')
-user = os.environ.get('MEMCACHIER_USERNAME', '')
-passw = os.environ.get('MEMCACHIER_PASSWORD', '')
-mc = bmemcached.Client(servers, username=user, password=passw)
-mc.enable_retry_delay(True)
-
-def load_cache():
-    history = [i.serialize for i in Trades.query.all()]
-    best = [i.serialize for i in Trades.query.order_by(desc(Trades.pl)).limit(5)]
-    worst = [i.serialize for i in Trades.query.order_by(Trades.pl).limit(5)]
-    wins = Trades.query.filter(Trades.pl > 0).count()
-    losses = Trades.query.filter(Trades.pl < 0).count()
-    record = {'wins' : wins,
-              'losses' : losses,
-              'win_percentage' : round((float)(wins/(wins+losses)), 2)}
-    mc.set("history", history)
-    mc.set("best", best)
-    mc.set("worst", worst)
-    mc.set("record", record)
-
-def login():
-    runExits()
-    runEntries()
-    load_cache()
-
+# DB
 class Trades(db.Model):
     __tablename__ = 'trades'
     date = db.Column(db.String, primary_key=True, nullable=False)
@@ -197,6 +172,32 @@ def init_db():
     db.create_all()
     load_cache()
 
+# CACHE
+servers = os.environ.get('MEMCACHIER_SERVERS', '').split(',')
+user = os.environ.get('MEMCACHIER_USERNAME', '')
+passw = os.environ.get('MEMCACHIER_PASSWORD', '')
+mc = bmemcached.Client(servers, username=user, password=passw)
+mc.enable_retry_delay(True)
+
+def load_cache():
+    history = [i.serialize for i in Trades.query.all()]
+    best = [i.serialize for i in Trades.query.order_by(desc(Trades.pl)).limit(5)]
+    worst = [i.serialize for i in Trades.query.order_by(Trades.pl).limit(5)]
+    wins = Trades.query.filter(Trades.pl > 0).count()
+    losses = Trades.query.filter(Trades.pl < 0).count()
+    record = {'wins' : wins,
+              'losses' : losses,
+              'win_percentage' : round((float)(wins/(wins+losses)), 2)}
+    mc.set("history", history)
+    mc.set("best", best)
+    mc.set("worst", worst)
+    mc.set("record", record)
+
+def login():
+    runExits()
+    runEntries()
+    load_cache()
+
 ## ENDPOINTS
 @app.errorhandler(404)
 def page_not_found(e):
@@ -213,22 +214,35 @@ def home():
 @app.route('/trades', methods=['GET'])
 def trades_history():
     history = mc.get("history")
+    if history is None:
+        history = [i.serialize for i in Trades.query.all()]
+        mc.set("history", history)
     return jsonify(history)
 @app.route('/trades/best', methods=['GET'])
 def trades_best():
     best = mc.get("best")
+    if best is None:
+        best = [i.serialize for i in Trades.query.order_by(desc(Trades.pl)).limit(5)]
+        mc.set("best", best)
     return jsonify(best)
 @app.route('/trades/worst', methods=['GET'])
 def trades_worst():
     worst = mc.get("worst")
+    if worst is None:
+        worst = [i.serialize for i in Trades.query.order_by(Trades.pl).limit(5)]
+        mc.set("worst", worst)
     return jsonify(worst)
 @app.route('/trades/record', methods=['GET'])
 def trades_record():
     record = mc.get("record")
+    if record is None:
+        wins = Trades.query.filter(Trades.pl > 0).count()
+        losses = Trades.query.filter(Trades.pl < 0).count()
+        record = {'wins' : wins,
+                'losses' : losses,
+                'win_percentage' : round((float)(wins/(wins+losses)), 2)}
+        mc.set("record", record)
     return jsonify(record)
-@app.route('/today', methods=['GET'])
-def today():
-    return todayString
 
 if __name__ == "__main__":
     init_db()
