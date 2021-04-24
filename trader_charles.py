@@ -16,11 +16,10 @@ import time
 import bmemcached
 import os
 from os.path import join, dirname
-
-
 from dotenv import load_dotenv
 dotenv_path = join(dirname(__file__), '.env')
 load_dotenv(dotenv_path)
+
 from algo_charles import entry_algo, exit_algo
 from screener_charles import screen
 from stock import Stock
@@ -168,10 +167,6 @@ class Trades(db.Model):
            'plpc'           : self.plpc
        }
 
-def init_db():
-    db.create_all()
-    load_cache()
-
 # CACHE
 servers = os.environ.get('MEMCACHIER_SERVERS', '').split(',')
 user = os.environ.get('MEMCACHIER_USERNAME', '')
@@ -198,6 +193,10 @@ def login():
     runEntries()
     load_cache()
 
+def init_app():
+    db.create_all()
+    load_cache()
+    
 ## ENDPOINTS
 @app.errorhandler(404)
 def page_not_found(e):
@@ -245,5 +244,5 @@ def trades_record():
     return jsonify(record)
 
 if __name__ == "__main__":
-    init_db()
+    init_app()
     app.run()
