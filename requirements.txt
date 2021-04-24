@@ -13,3 +13,4 @@ finvizfinance
 progress
 xlsxwriter
 psycopg2-binary
+python-binary-memcached

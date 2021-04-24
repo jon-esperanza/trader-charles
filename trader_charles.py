@@ -13,6 +13,7 @@ import datetime as dt
 from datetime import datetime
 from pytz import timezone
 import time
+import bmemcached
 import os
 from os.path import join, dirname
 
@@ -138,9 +139,31 @@ app.config["SQLALCHEMY_DATABASE_URI"] = Postgres_URI
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
+# CACHE
+servers = os.environ.get('MEMCACHIER_SERVERS', '').split(',')
+user = os.environ.get('MEMCACHIER_USERNAME', '')
+passw = os.environ.get('MEMCACHIER_PASSWORD', '')
+mc = bmemcached.Client(servers, username=user, password=passw)
+mc.enable_retry_delay(True)
+
+def load_cache():
+    history = [i.serialize for i in Trades.query.all()]
+    best = [i.serialize for i in Trades.query.order_by(desc(Trades.pl)).limit(5)]
+    worst = [i.serialize for i in Trades.query.order_by(Trades.pl).limit(5)]
+    wins = Trades.query.filter(Trades.pl > 0).count()
+    losses = Trades.query.filter(Trades.pl < 0).count()
+    record = {'wins' : wins,
+              'losses' : losses,
+              'win_percentage' : round((float)(wins/(wins+losses)), 2)}
+    mc.set("history", history)
+    mc.set("best", best)
+    mc.set("worst", worst)
+    mc.set("record", record)
+
 def login():
     runExits()
     runEntries()
+    load_cache()
 
 class Trades(db.Model):
     __tablename__ = 'trades'
@@ -172,6 +195,7 @@ class Trades(db.Model):
 
 def init_db():
     db.create_all()
+    load_cache()
 
 ## ENDPOINTS
 @app.errorhandler(404)
@@ -188,23 +212,19 @@ def home():
 #TODO: implement websocket for stream directly from API
 @app.route('/trades', methods=['GET'])
 def trades_history():
-    history = [i.serialize for i in Trades.query.all()]
+    history = mc.get("history")
     return jsonify(history)
 @app.route('/trades/best', methods=['GET'])
 def trades_best():
-    best = [i.serialize for i in Trades.query.order_by(desc(Trades.pl)).limit(5)]
+    best = mc.get("best")
     return jsonify(best)
 @app.route('/trades/worst', methods=['GET'])
 def trades_worst():
-    worst = [i.serialize for i in Trades.query.order_by(Trades.pl).limit(5)]
+    worst = mc.get("worst")
     return jsonify(worst)
 @app.route('/trades/record', methods=['GET'])
 def trades_record():
-    wins = Trades.query.filter(Trades.pl > 0).count()
-    losses = Trades.query.filter(Trades.pl < 0).count()
-    record = {'wins' : wins,
-              'losses' : losses,
-              'win_percentage' : round((float)(wins/(wins+losses)), 2)}
+    record = mc.get("record")
     return jsonify(record)
 @app.route('/today', methods=['GET'])
 def today():
