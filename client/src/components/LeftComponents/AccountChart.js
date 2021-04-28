@@ -2,6 +2,11 @@ import React from 'react';
 import {Line} from 'react-chartjs-2';
 import alpaca from '../../api/Alpaca';
 
+export var formatter = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD'
+})
+
 class AccountChart extends React.Component {
     constructor() {
         super();
@@ -22,7 +27,7 @@ class AccountChart extends React.Component {
     componentDidMount() {
         alpaca.getPortfolioHistory({
             date_start: "2021-03-19", 
-            date_end: "2021-04-27", 
+            date_end: "2021-04-28", 
             timeframe: "1D",
             extended_hours: false}).then((data) => {
                 console.log("History: ", data)
@@ -52,10 +57,6 @@ class AccountChart extends React.Component {
             })
     }
     render() {
-        var formatter = new Intl.NumberFormat('en-US', {
-            style: 'currency',
-            currency: 'USD'
-        })
         return (
             <div className="account-info-chart-container">
                 <Line

@@ -168,19 +168,49 @@ passw = os.environ.get('MEMCACHIER_PASSWORD', '')
 mc = bmemcached.Client(servers, username=user, password=passw)
 mc.enable_retry_delay(True)
 
-def load_cache():
+def calc_profits_exchange(arr):
+    hash_exc = dict()
+    for i in arr:
+        if i.exchange in hash_exc:
+            hash_exc[i.exchange] += i.pl
+        else:
+            hash_exc[i.exchange] = i.pl
+    return hash_exc
+def load_history():
     history = [i.serialize for i in Trades.query.all()]
+    mc.set("history", history)
+    return history
+def load_best():
     best = [i.serialize for i in Trades.query.order_by(desc(Trades.pl)).limit(5)]
+    mc.set("best", best)
+    return best
+def load_worst():
     worst = [i.serialize for i in Trades.query.order_by(Trades.pl).limit(5)]
+    mc.set("worst", worst)
+    return worst
+def load_record():
     wins = Trades.query.filter(Trades.pl > 0).count()
     losses = Trades.query.filter(Trades.pl < 0).count()
     record = {'wins' : wins,
               'losses' : losses,
               'win_percentage' : round((float)(wins/(wins+losses)), 2)}
-    mc.set("history", history)
-    mc.set("best", best)
-    mc.set("worst", worst)
     mc.set("record", record)
+    return record
+def load_exchange():
+    hash_exc = calc_profits_exchange(Trades.query.all())
+    keys = list(hash_exc.keys())
+    vals = list(hash_exc.values())
+    exchange = {'exchanges' : keys,
+                'profits'   : vals}
+    mc.set("exchange", exchange)
+    return exchange
+def load_cache():
+    load_history()
+    load_best()
+    load_worst()
+    load_record()
+    load_exchange()
+    
 
 def login():
     runExits()
@@ -209,34 +239,32 @@ def home():
 def trades_history():
     history = mc.get("history")
     if history is None:
-        history = [i.serialize for i in Trades.query.all()]
-        mc.set("history", history)
+        history = load_history()
     return jsonify(history)
 @app.route('/trades/best', methods=['GET'])
 def trades_best():
     best = mc.get("best")
     if best is None:
-        best = [i.serialize for i in Trades.query.order_by(desc(Trades.pl)).limit(5)]
-        mc.set("best", best)
+        best = load_best()
     return jsonify(best)
 @app.route('/trades/worst', methods=['GET'])
 def trades_worst():
     worst = mc.get("worst")
     if worst is None:
-        worst = [i.serialize for i in Trades.query.order_by(Trades.pl).limit(5)]
-        mc.set("worst", worst)
+        worst = load_worst()
     return jsonify(worst)
 @app.route('/trades/record', methods=['GET'])
 def trades_record():
     record = mc.get("record")
     if record is None:
-        wins = Trades.query.filter(Trades.pl > 0).count()
-        losses = Trades.query.filter(Trades.pl < 0).count()
-        record = {'wins' : wins,
-                'losses' : losses,
-                'win_percentage' : round((float)(wins/(wins+losses)), 2)}
-        mc.set("record", record)
+        record = load_record()
     return jsonify(record)
+@app.route('/trades/byexchange', methods=['GET'])
+def profit_by_exchange():
+    exchange = mc.get("exchange")
+    if exchange is None:
+        exchange = load_exchange()
+    return jsonify(exchange)
 
 if __name__ == "__main__":
     init_app()

@@ -10,9 +10,13 @@ from stock import Stock
 
 def screenFV():
     foverview = Overview()
-    filters_dict = {'Price':'$5 to $20', '50-Day Simple Moving Average':'Price above SMA50', '200-Day Simple Moving Average':'SMA200 below SMA50', 'PEG':'Under 1', 'Current Volume':'Over 400K', 'Relative Volume':'Over 1'}
-    foverview.set_filter(filters_dict=filters_dict)
-    df = foverview.ScreenerView()
+    filters_dictDIP = {'Price':'$5 to $20', '200-Day Simple Moving Average':'SMA200 below SMA50', 'PEG':'Under 1', 'Current Volume':'Over 400K', 'Relative Volume':'Over 1'}
+    filters_dictSUPPORT = {'Price':'$5 to $20', '200-Day Simple Moving Average':'SMA200 below SMA50', 'RSI (14)': 'Not Overbought (<50)','Pattern': 'TL Support','Current Volume':'Over 1M', 'Relative Volume':'Over 1'}
+    foverview.set_filter(filters_dict=filters_dictDIP)
+    dfDIP = foverview.ScreenerView()
+    foverview.set_filter(filters_dict=filters_dictSUPPORT)
+    dfSUP = foverview.ScreenerView()
+    df = pd.concat([dfDIP, dfSUP])
     return df
 
 

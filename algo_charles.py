@@ -1,7 +1,7 @@
 
 
 def entry_algo(df):
-    data = df[(df['Close'] < df['prev7DayLow']) & (df['RSI(14)pctRank'] <= .20) & (df['RSI(2)'] <= 20) & (df['ADX(5)'] > 35)]
+    data = df[(df['Close'] < df['prev7DayLow']) & (df['RSI(2)'] <= 20) & (df['ADX(5)'] > 35)]
     return data.reset_index(drop=True)
 
 def exit_algo(df):

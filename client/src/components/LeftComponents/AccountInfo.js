@@ -1,6 +1,7 @@
 import React from "react";
 import alpaca from "../../api/Alpaca";
-import AccountChart from "./AccountChart";
+import AccountChart, { formatter } from "./AccountChart";
+
 
 class AccountInfo extends React.Component {
     constructor(){
@@ -14,10 +15,6 @@ class AccountInfo extends React.Component {
       });
     }
     render() {
-      var formatter = new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: 'USD'
-      })
       return (
         <div className="account-info-container">
           <div className="account-info">
