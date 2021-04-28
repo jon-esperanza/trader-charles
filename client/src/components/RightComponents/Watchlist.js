@@ -21,23 +21,23 @@ class Watchlist extends React.Component {
             <div className="watchlist-container">
                 <div className="container-header">
                     <p className="text-headline-heavy">Watchlist</p>
-                    <table className="styled-table">
-                        <thead>
-                            <tr>
-                                <th className="ticker-col">Ticker</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {this.state.watchlist.map((item, i) => {
-                                return (
-                                    <tr key={i}>
-                                        <td className="ticker-col">{item.symbol}</td>
-                                    </tr>
-                                )
-                            })}
-                        </tbody>
-                    </table>
                 </div>
+                <table className="styled-table">
+                    <thead>
+                        <tr>
+                            <th className="ticker-col">Ticker</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {this.state.watchlist.map((item, i) => {
+                            return (
+                                <tr key={i}>
+                                    <td className="ticker-col">{item.symbol}</td>
+                                </tr>
+                            )
+                        })}
+                    </tbody>
+                </table>
             </div>
         )
     }

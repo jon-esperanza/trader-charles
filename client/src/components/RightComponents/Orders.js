@@ -21,27 +21,27 @@ class Orders extends React.Component {
             <div className="orders-container">
                 <div className="container-header">
                     <p className="text-headline-heavy">Pending Orders</p>
-                    <table className="styled-table orders">
-                        <thead>
-                            <tr>
-                                <th className="ticker-col">Ticker</th>
-                                <th>Order</th>
-                                <th>Shares</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {this.state.orders.map((item, i) => {
-                                return (
-                                    <tr key={i}>
-                                        <td className="ticker-col">{item.symbol}</td>
-                                        <td>{(item.side).toString().toUpperCase()}</td>
-                                        <td>{item.qty}</td>
-                                    </tr>
-                                )
-                            })}
-                        </tbody>
-                    </table>
                 </div>
+                <table className="styled-table orders">
+                    <thead>
+                        <tr>
+                            <th className="ticker-col">Ticker</th>
+                            <th>Order</th>
+                            <th>Shares</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {this.state.orders.map((item, i) => {
+                            return (
+                                <tr key={i}>
+                                    <td className="ticker-col">{item.symbol}</td>
+                                    <td>{(item.side).toString().toUpperCase()}</td>
+                                    <td>{item.qty}</td>
+                                </tr>
+                            )
+                        })}
+                    </tbody>
+                </table>
             </div>
         )
     }

@@ -22,7 +22,8 @@ class Positions extends React.Component {
         return (
             <div className="portfolio-container">
                 <div className="container-header">
-                <p className="text-headline-heavy">Positions</p>
+                    <p className="text-headline-heavy">Positions</p>
+                </div>
                 <table className="styled-table">
                     <thead>
                         <tr>
@@ -47,7 +48,6 @@ class Positions extends React.Component {
                         })}
                     </tbody>
                 </table>
-                </div>
             </div>
         )
     }

@@ -13,9 +13,11 @@ class AccountChart extends React.Component {
         this.state = {}
     }
     componentDidMount() {
+        var now = new Date();
+        let date_end = now.toISOString().split('T')[0]
         alpaca.getPortfolioHistory({
             date_start: "2021-03-19", 
-            date_end: "2021-04-28", 
+            date_end: date_end, 
             timeframe: "1D",
             extended_hours: false}).then((data) => {
                 console.log("History: ", data)
@@ -49,7 +51,6 @@ class AccountChart extends React.Component {
             <div className="account-info-chart-container">
                 <Line
                     data={this.state}
-                    width={"40vw"}
                     options= {{
                         responsive: true,
                         maintainAspectRatio: false,
@@ -65,7 +66,7 @@ class AccountChart extends React.Component {
                                     autoSkip: true,
                                     maxRotation: 0,
                                     minRotation: 0,
-                                    maxTicksLimit: 5,
+                                    maxTicksLimit: 4,
                                     fontFamily: "Open Sans, sans-serif",
                                     fontColor: "#f4ebf5da",
                                 }

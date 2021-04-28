@@ -7,29 +7,31 @@ class PieChart extends React.Component {
         this.state = {}
     }
     componentDidMount() {
-        let data = getExchangeData();
-        console.log(data);
-        this.setState({
-            datasets: [{
-                data: data.profits,
-                backgroundColor: [
-                    'rgba(213, 45, 183, 0.9)',
-                    'rgba(243, 187, 28, 0.9)',
-                    'rgba(96, 80, 220, 0.9)',
-                    'rgba(49, 135, 48, 0.9)',
-                    'rgba(63, 94, 208, 0.9)',
-                    'rgba(240, 55, 56, 0.9)',
-                ],
-                borderColor: [
-                'rgba(154, 45, 183, 1)',
-                'rgba(184, 187, 28, 1)',
-                'rgba(56, 48, 121, 1)',
-                'rgba(25, 83, 25, 1)',
-                'rgba(33, 46, 96, 1)',
-                'rgba(134, 40, 40, 1)',
-                ],
-                borderWidth: 1,
-            }]
+        getExchangeData().then((data) => {
+            console.log("Profits By Exchange: ", data);
+            this.setState({
+                labels: data.exchanges,
+                datasets: [{
+                    data: data.profits,
+                    backgroundColor: [
+                        'rgba(213, 45, 183, 0.9)',
+                        'rgba(243, 187, 28, 0.9)',
+                        'rgba(96, 80, 220, 0.9)',
+                        'rgba(49, 135, 48, 0.9)',
+                        'rgba(63, 94, 208, 0.9)',
+                        'rgba(240, 55, 56, 0.9)',
+                    ],
+                    borderColor: [
+                        'rgba(154, 45, 183, 1)',
+                        'rgba(184, 187, 28, 1)',
+                        'rgba(56, 48, 121, 1)',
+                        'rgba(25, 83, 25, 1)',
+                        'rgba(33, 46, 96, 1)',
+                        'rgba(134, 40, 40, 1)',
+                    ],
+                    borderWidth: 1,
+                }]
+            })
         })
     }
     render() {
