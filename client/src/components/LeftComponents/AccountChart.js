@@ -10,19 +10,7 @@ export var formatter = new Intl.NumberFormat('en-US', {
 class AccountChart extends React.Component {
     constructor() {
         super();
-        this.state = {
-            labels: ['03/19/21', '03/29/21', '04/07/21', '04/15/21', '04/23/21'],
-            datasets: [
-                {
-                    label: 'Balance',
-                    fill: 'false',
-                    lineTension: 0,
-                    borderColor: '#B57BFF',
-                    borderWidth: 2,
-                    data: [1400, 1389, 1300, 1415, 1416]
-                }
-            ]
-        }
+        this.state = {}
     }
     componentDidMount() {
         alpaca.getPortfolioHistory({

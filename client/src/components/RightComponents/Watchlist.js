@@ -25,7 +25,6 @@ class Watchlist extends React.Component {
                         <thead>
                             <tr>
                                 <th className="ticker-col">Ticker</th>
-                                <th>Current Price</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -33,7 +32,6 @@ class Watchlist extends React.Component {
                                 return (
                                     <tr key={i}>
                                         <td className="ticker-col">{item.symbol}</td>
-                                        <td>{item.close}</td>
                                     </tr>
                                 )
                             })}

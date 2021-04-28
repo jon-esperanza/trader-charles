@@ -3,6 +3,7 @@ import flask
 from flask import request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate, MigrateCommand
+from flask_cors import CORS, cross_origin
 from sqlalchemy.sql.schema import ForeignKey
 from sqlalchemy import desc
 import alpaca_trade_api as tradeapi
@@ -127,6 +128,7 @@ def runExits():
 # API
 Postgres_URI = os.environ.get('Postgres_URI')
 app = flask.Flask(__name__)
+cors = CORS(app)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config["SQLALCHEMY_DATABASE_URI"] = Postgres_URI
 db = SQLAlchemy(app)
@@ -236,30 +238,35 @@ def home():
 
 
 @app.route('/trades', methods=['GET'])
+@cross_origin()
 def trades_history():
     history = mc.get("history")
     if history is None:
         history = load_history()
     return jsonify(history)
 @app.route('/trades/best', methods=['GET'])
+@cross_origin()
 def trades_best():
     best = mc.get("best")
     if best is None:
         best = load_best()
     return jsonify(best)
 @app.route('/trades/worst', methods=['GET'])
+@cross_origin()
 def trades_worst():
     worst = mc.get("worst")
     if worst is None:
         worst = load_worst()
     return jsonify(worst)
 @app.route('/trades/record', methods=['GET'])
+@cross_origin()
 def trades_record():
     record = mc.get("record")
     if record is None:
         record = load_record()
     return jsonify(record)
 @app.route('/trades/byexchange', methods=['GET'])
+@cross_origin()
 def profit_by_exchange():
     exchange = mc.get("exchange")
     if exchange is None:
