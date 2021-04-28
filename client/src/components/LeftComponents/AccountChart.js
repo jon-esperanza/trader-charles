@@ -22,7 +22,7 @@ class AccountChart extends React.Component {
     componentDidMount() {
         alpaca.getPortfolioHistory({
             date_start: "2021-03-19", 
-            date_end: "2021-04-23", 
+            date_end: "2021-04-27", 
             timeframe: "1D",
             extended_hours: false}).then((data) => {
                 console.log("History: ", data)
@@ -68,7 +68,7 @@ class AccountChart extends React.Component {
                         scales: {
                             xAxes: [{
                                 gridLines: {
-                                    display:false,
+                                    display: false,
                                     color: '#f4ebf5da'
                                 },
                                 ticks: {
@@ -78,7 +78,7 @@ class AccountChart extends React.Component {
                                     minRotation: 0,
                                     maxTicksLimit: 5,
                                     fontFamily: "Open Sans, sans-serif",
-                                    fontColor: "#f4ebf5da"
+                                    fontColor: "#f4ebf5da",
                                 }
                             }],
                             yAxes: [{

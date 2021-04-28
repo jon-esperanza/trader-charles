@@ -66,11 +66,6 @@ def createStockData(df):
     bar.finish()
     return stockData
 
-def get_col_widths(dataframe):
-    # First we find the maximum length of the index column   
-    idx_max = max([len(str(s)) for s in dataframe.index.values] + [len(str(dataframe.index.name))])
-    # Then, we concatenate this to the max of the lengths of column name and its values for each column, left to right
-    return [idx_max] + [max([len(str(s)) for s in dataframe[col].values] + [len(col)]) for col in dataframe.columns]
 #File Management
 def writeStockFile(data, file_name=re.sub('[ :]','_', time.asctime() + 'SCREEN_STOCKS.pkl')):
     if not os.path.isdir("OldStockData"):
@@ -88,17 +83,16 @@ def writeStockExcel(data, file_name=re.sub('[ :]','_', time.asctime() + 'SCREEN_
         worksheet.set_column(i, i, width)
     writer.save()
     return file_name
-
 def get_col_widths(dataframe):
     # First we find the maximum length of the index column   
     idx_max = max([len(str(s)) for s in dataframe.index.values] + [len(str(dataframe.index.name))])
     # Then, we concatenate this to the max of the lengths of column name and its values for each column, left to right
     return [idx_max] + [max([len(str(s)) for s in dataframe[col].values] + [len(col)]) for col in dataframe.columns]
-
 def loadStockFile(file_name):
     with open('OldStockData/' + file_name, 'rb') as f:
         info = pickle.load(f)
     return info
+
 
 # screening methods
 def screen():

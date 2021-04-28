@@ -30,17 +30,11 @@ class Orders extends React.Component {
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td className="ticker-col">TSLA</td>
-                                <td>BUY</td>
-                                <td>2</td>
-                            </tr>
-                            
                             {this.state.orders.map((item, i) => {
                                 return (
                                     <tr key={i}>
                                         <td className="ticker-col">{item.symbol}</td>
-                                        <td>{item.side}</td>
+                                        <td>{(item.side).toString().toUpperCase()}</td>
                                         <td>{item.qty}</td>
                                     </tr>
                                 )

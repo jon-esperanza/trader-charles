@@ -12,7 +12,6 @@ import numpy as np
 import datetime as dt
 from datetime import datetime
 from pytz import timezone
-import time
 import bmemcached
 import os
 from os.path import join, dirname
@@ -112,13 +111,8 @@ def sortExits(df):
     return sell_stocks
 #TODO CHECK IF THIS WORKS
 def placeExits(df):
-    acc = Account.query.filter_by(date=todayString).first()
     for x in df:
         submitOrder(x.shares, x.ticker, 'sell')
-        if x.pl > 0:
-            acc.wins = Account.wins + 1
-        else:
-            acc.losses = Account.losses + 1
         exitStock = Trades(date= todayString, ticker= x.ticker, exchange= x.exchange, close= x.close, shares= x.shares, entry_price= x.entry_price, cost_basis= x.cost_basis, marketvalue= x.marketvalue, pl= x.pl, plpc= x.plpc)
         db.session.add(exitStock)
     db.session.commit()
@@ -209,7 +203,8 @@ def home():
     <p><strong>/trades/best</strong> - returns the 5 most profitable trades in database</p>
     <p><strong>/trades/worst</strong> - returns the 5 least profitable trades in database</p>
     <p><strong>/trades/record</strong> - returns charles' trading record</p>'''
-#TODO: implement websocket for stream directly from API
+
+
 @app.route('/trades', methods=['GET'])
 def trades_history():
     history = mc.get("history")

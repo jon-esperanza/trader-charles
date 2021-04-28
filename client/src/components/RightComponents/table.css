@@ -1,22 +1,23 @@
 .styled-table {
     border-collapse: collapse;
-    margin: 0 auto;
+    min-width: 30vw;
+    margin: 0 1.5vw 1.5vw 0;
     font-size: 0.9em;
     font-family: Open Sans, sans-serif;
     height: auto;
-    min-width: 30vw;
-    border-top: thin solid #27282bfb;
+    border-radius: 20px 20px 0 0;
+    overflow: hidden;
 }
 .styled-table thead tr {
     color: #ffffff77;
     text-align: right;
-    border-bottom: thin solid #27282bfb;
+    border-bottom: thin solid #151516fb;
 }
 .styled-table tbody tr {
     font-weight: bold;
     color: #f4ebf5da;
     text-align: right;
-    border-bottom: thin solid #27282bfb;
+    border-bottom: thin solid #141416fb;
 }
 
 .styled-table th {
@@ -28,6 +29,9 @@
 }
 .styled-table tbody tr:nth-of-type(odd) {
     background-color: #45464b81;
+}
+.styled-table tbody tr:last-child{
+    border-bottom: 0;
 }
 .styled-table .ticker-col {
     text-align: left;
