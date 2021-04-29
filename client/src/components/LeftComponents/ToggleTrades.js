@@ -1,6 +1,7 @@
 import React from "react";
 import "./toggle.css";
 import { getBestTrades, getWorstTrades } from "../../api/BackendCharles";
+import Profit from "../RightComponents/Profit";
 
 class ToggleTrades extends React.Component {
     constructor() {
@@ -11,7 +12,7 @@ class ToggleTrades extends React.Component {
             best: true
         };
     }
-    ToggleTrades() {
+    ToggleTrades(e) {
         this.setState((currentState) => ({
             bestTrades: currentState.bestTrades,
             worstTrades: currentState.worstTrades,
@@ -46,7 +47,7 @@ class ToggleTrades extends React.Component {
                 <div className="container-header">
                     <p className="text-headline-heavy trades">Trades</p>
                     <label className="switch">
-                        <input type="checkbox" defaultChecked onClick={() => this.ToggleTrades() }/>
+                        <input type="checkbox" defaultChecked onClick={(e) => this.ToggleTrades(e) }/>
                         <span className="switch-label" data-on="Top 5" data-off="Worst 5"></span>
                         <span className="switch-handle"></span>
                     </label>
@@ -64,7 +65,7 @@ class ToggleTrades extends React.Component {
                             return (
                                 <tr key={i}>
                                     <td className="ticker-col">{item.ticker}</td>
-                                    <td>{item.pl}</td>
+                                    <Profit profit={item.pl}/>
                                 </tr>
                             )
                         })

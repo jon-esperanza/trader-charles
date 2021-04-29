@@ -14,16 +14,16 @@ class PieChart extends React.Component {
                 datasets: [{
                     data: data.profits,
                     backgroundColor: [
-                        '#6247AAef',
-                        '#B33F62ef',
+                        '#aa8debef',
+                        '#e64575ef',
                         '#F9564Fef',
                         '#F3C677ef',
                         '#0C0A3Eef',
                         '#7B1E7Aef',
                     ],
                     borderColor: [
-                        '#6247AA',
-                        '#B33F62',
+                        '#946ceb',
+                        '#f3497c',
                         '#F9564F',
                         '#F3C677',
                         '#0C0A3E',

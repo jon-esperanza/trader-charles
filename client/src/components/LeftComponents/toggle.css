@@ -5,8 +5,8 @@
 	height: 25px;
 	padding: 2px;
 	margin: .4vw 10px 10px 0;
-	background: linear-gradient(to bottom, #3b2774, #15073a 25px);
-	background-image: -webkit-linear-gradient(top, #3b2774, #15073a 25px);
+	background: linear-gradient(to bottom, #5242926c 40%, #15073a6c);
+	background-image: -webkit-linear-gradient(top, #5242926c 40%, #15073a6c);
 	border-radius: 18px;
 	box-shadow: inset 0 -1px #15073a, inset 0 1px 1px rgba(0, 0, 0, 0.05);
 	cursor: pointer;
@@ -23,11 +23,11 @@
     position: relative;
     display: block;
     height: inherit;
-    font-size: 10px;
+    font-size: 12px;
     font-weight: bold;
     font-family: Open Sans, sans-serif;
     text-transform: uppercase;
-    background: #EFC3F5;
+    background: #aa8deb;
     border-radius: inherit;
     box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.12), inset 0 0 2px rgba(0, 0, 0, 0.15);
 	box-sizing:content-box;
@@ -46,18 +46,18 @@
 .switch-label:before {
 	content: attr(data-off);
 	right: 0.5vw;
-	color: #7353BA;
+	color: #302269;
 	text-shadow: 0 1px rgba(255, 255, 255, 0.5);
 }
 .switch-label:after {
 	content: attr(data-on);
 	left: 0.5vw;
-	color: #EFC3F5;
+	color: #aa8deb;
 	text-shadow: 0 1px rgba(0, 0, 0, 0.2);
 	opacity: 0;
 }
 .switch input:checked ~ .switch-label {
-	background: #7353BA;
+	background: #302269;
 	box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.15), inset 0 0 3px rgba(0, 0, 0, 0.2);
 }
 .switch input:checked ~ .switch-label:before {
@@ -72,8 +72,8 @@
     left: 1px;
 	width: 28px;
 	height: 28px;
-	background: linear-gradient(to bottom, #3b2774 40%, #15073a);
-	background-image: -webkit-linear-gradient(top, #3b2774 40%, #15073a);
+	background: radial-gradient(to bottom, #524292 40%, #15073a);
+	background-image: -webkit-linear-gradient(top, #524292 40%, #15073a);
 	border-radius: 100%;
 	box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2);
 }
@@ -85,13 +85,13 @@
 	margin: -6px 0 0 -6px;
 	width: 12px;
 	height: 12px;
-	background: linear-gradient(to bottom, #3b2774, #782788);
-	background-image: -webkit-linear-gradient(top, #3b2774, #782788);
+	background: radial-gradient(to bottom, #302269, #876cc2);
+	background-image: -webkit-linear-gradient(top, #302269, #876cc2);
 	border-radius: 6px;
 	box-shadow: inset 0 1px rgba(0, 0, 0, 0.02);
 }
 .switch input:checked ~ .switch-handle {
-	left: 68%;
+	left: 70%;
 	box-shadow: -1px 1px 5px rgba(0, 0, 0, 0.2);
 }
  
