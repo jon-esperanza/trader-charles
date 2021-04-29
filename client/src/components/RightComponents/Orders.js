@@ -28,7 +28,7 @@ class Orders extends React.Component {
                     {props.orders.map((item, i) => {
                         return (
                             <tr key={i}>
-                                <td className="ticker-col">{item.symbol}</td>
+                                <td className="ticker-col"><a href={"https://www.tradingview.com/symbols/" + item.symbol} target="_blank">{item.symbol}</a></td>
                                 <td>{(item.side).toString().toUpperCase()}</td>
                                 <td>{item.qty}</td>
                             </tr>
