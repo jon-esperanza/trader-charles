@@ -12,15 +12,15 @@
     min-width: 20vw;
 }
 .styled-table thead tr {
-    color: #ffffff77;
+    color: #f2d6f877;
     text-align: right;
-    border-bottom: thin solid #151516fb;
+    border-bottom: thin solid #604b7431;
 }
 .styled-table tbody tr {
     font-weight: bold;
-    color: #f4ebf5da;
+    color: #EFC3F5;
     text-align: right;
-    border-bottom: thin solid #141416fb;
+    border-bottom: thin solid #604b7431;
 }
 
 .styled-table th {
@@ -31,7 +31,7 @@
     padding: 2vh 0.5vw 2vh 0.5vw;
 }
 .styled-table tbody tr:nth-of-type(odd) {
-    background-color: #45464b81;
+    background-color: #44335331;
 }
 .styled-table tbody tr:last-child{
     border-bottom: 0;

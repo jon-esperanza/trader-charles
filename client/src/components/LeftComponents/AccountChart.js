@@ -35,7 +35,7 @@ class AccountChart extends React.Component {
                             label: 'Balance',
                             fill: 'false',
                             lineTension: 0,
-                            borderColor: '#B57BFF',
+                            borderColor: '#EFC3F5',
                             borderWidth: 2,
                             data: data.equity,
                             pointRadius: 0,

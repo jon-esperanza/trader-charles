@@ -1,4 +1,5 @@
 import React from "react";
+import "./toggle.css";
 import { getBestTrades, getWorstTrades } from "../../api/BackendCharles";
 
 class ToggleTrades extends React.Component {
@@ -43,10 +44,11 @@ class ToggleTrades extends React.Component {
         return (
             <div className="toggle-trades-container">
                 <div className="container-header">
-                    <p className="text-headline-heavy">Trades</p>
-                    <label class="switch">
-                        <input type="checkbox" onClick={() => this.ToggleTrades() }/>
-                        <span class="slider round"></span>
+                    <p className="text-headline-heavy trades">Trades</p>
+                    <label className="switch">
+                        <input type="checkbox" defaultChecked onClick={() => this.ToggleTrades() }/>
+                        <span className="switch-label" data-on="Top 5" data-off="Worst 5"></span>
+                        <span className="switch-handle"></span>
                     </label>
                 </div>
                 <table className="styled-table toggle">

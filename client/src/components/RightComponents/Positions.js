@@ -42,7 +42,7 @@ class Positions extends React.Component {
                                     <td>{item.qty}</td>
                                     <td>{formatter.format(item.avg_entry_price)}</td>
                                     <td>{formatter.format(item.current_price)}</td>
-                                    <td>{formatter.format(item.unrealized_pl)}</td>
+                                    <td className="positions-profit" pos={item.unrealized_pl > 0 ? true : false}>{formatter.format(item.unrealized_pl)}</td>
                                 </tr>
                             )
                         })}

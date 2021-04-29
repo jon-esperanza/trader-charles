@@ -16,7 +16,7 @@
   font-weight: bold;
   line-height: 48px;
   font-size: 30px;
-  color: #B57BFF;
+  color: #9f80e2;
 }
 
 /* LEFT COLUMN */
@@ -29,7 +29,7 @@
   display: flex;
   flex-direction: column;
   border-radius: 20px;
-  background-color: #4043479a;
+  background-color: #3c2e492c;
   box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.12);
   
 }
@@ -45,7 +45,7 @@
   font-weight: bold;
   font-size: 20px;
   line-height: 10px;
-  color: #cfb5f1;
+  color: #EFC3F5;
 }
 .text-headline-light {
   font-family: Open Sans;
@@ -53,7 +53,7 @@
   font-weight: normal;
   font-size: 18px;
   line-height: 10px;
-  color: #cfb5f1;
+  color: #EFC3F5;
 }
 .account-info-chart-container {
   width: 42vw;
@@ -63,34 +63,31 @@
 
 .pie-trades-container {
   width: 45vw;
-  height: auto;
   margin: 3vh 0 0 0;
   display: flex;
   flex-direction: row;
 }
 .pie-chart-container {
-  width: 50%;
-  height: 100%;
+  width: 45%;
+  height: auto;
   display: flex;
   flex-direction: column;
 }
 .pie-chart-title {
-  height: 40px;
+  text-align: center;
   margin: 0 auto;
+  padding-top: 0.5vw;
 }
 .pie-chart {
-  width: 250px;
-  height: 200px;
-  margin: 1vh auto;
-  border-radius: 40px;
-  text-align: center;
+  width: 100%;
+  margin: 0 auto;
+  height: 100%;
 }
 
 .toggle-trades-container {
   width: 50%;
+  height: auto;
   margin: 0 0 0 2vw;
-  height: 100%;
-  
 }
 
 .comparison-chart-container {
@@ -114,7 +111,7 @@
   flex-direction: column;
   height: auto;
   border-radius: 20px;
-  background-color: #4043479a;
+  background-color: #3c2e492c;
   filter: drop-shadow(0px 4px 8px rgba(0, 0, 0, 0.16));
 }
 .orders-container {
@@ -124,7 +121,7 @@
   flex-direction: column;
   height: auto;
   border-radius: 20px;
-  background-color: #4043479a;
+  background-color: #3c2e492c;
   filter: drop-shadow(0px 4px 8px rgba(0, 0, 0, 0.16));
 }
 .watchlist-container {
@@ -134,7 +131,7 @@
   margin: 3vh 0 0 0;
   height: auto;
   border-radius: 20px;
-  background-color: #4043479a;
+  background-color: #3c2e492c;
   filter: drop-shadow(0px 4px 8px rgba(0, 0, 0, 0.16));
 }
 .container-header {
@@ -144,7 +141,9 @@
   flex-direction: row;
   height: auto;
 }
-
+.trades {
+  width: 75%;
+}
 img {
   width: 30%;
   height: auto;

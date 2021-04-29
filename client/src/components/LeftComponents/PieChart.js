@@ -14,20 +14,20 @@ class PieChart extends React.Component {
                 datasets: [{
                     data: data.profits,
                     backgroundColor: [
-                        'rgba(213, 45, 183, 0.9)',
-                        'rgba(243, 187, 28, 0.9)',
-                        'rgba(96, 80, 220, 0.9)',
-                        'rgba(49, 135, 48, 0.9)',
-                        'rgba(63, 94, 208, 0.9)',
-                        'rgba(240, 55, 56, 0.9)',
+                        '#6247AAef',
+                        '#B33F62ef',
+                        '#F9564Fef',
+                        '#F3C677ef',
+                        '#0C0A3Eef',
+                        '#7B1E7Aef',
                     ],
                     borderColor: [
-                        'rgba(154, 45, 183, 1)',
-                        'rgba(184, 187, 28, 1)',
-                        'rgba(56, 48, 121, 1)',
-                        'rgba(25, 83, 25, 1)',
-                        'rgba(33, 46, 96, 1)',
-                        'rgba(134, 40, 40, 1)',
+                        '#6247AA',
+                        '#B33F62',
+                        '#F9564F',
+                        '#F3C677',
+                        '#0C0A3E',
+                        '#7B1E7A',
                     ],
                     borderWidth: 1,
                 }]
@@ -37,7 +37,7 @@ class PieChart extends React.Component {
     render() {
         return (
             <div className="pie-chart-container">
-                <div className="pie-chart-title">
+                <div className="content-header pie-chart-title">
                     <p className="text-headline-heavy">Profits by Exchange</p>
                 </div>
                 <div className="pie-chart">
