@@ -12,7 +12,7 @@ class Watchlist extends React.Component {
     checkTable(props) {
         if (props.watchlist.length == 0) {
             return (
-                <p className="text-headline-light placeholder">Charles hasn't added any stocks to his watchlist.</p>
+                <p className="text-headline-light placeholder wrap">Charles hasn't added any stocks to his watchlist.</p>
             )
         }
         return (

@@ -103,7 +103,7 @@ class Comparison extends React.Component {
         return (
             <div className="comparison-chart-container">
                 <div className="container-header">
-                    <p className="text-headline-heavy">Charles Compared to Market Indices</p>
+                    <p className="text-headline-heavy wrap">Charles Compared to Market Indices</p>
                     <select className="select" value={this.state.selected} onChange={(e) => this.handleChange(e)}>
                         <option className="option" value="dji">DJI</option>
                         <option value="spx">SPX</option>

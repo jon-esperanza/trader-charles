@@ -40,10 +40,9 @@
   margin: 0.5vw 0 0 1.5vw;
 }
 .accChange {
-  font-size: 12px;
-  position: absolute;
-  right: 48vw;
-  display: inline-block;
+  position: relative;
+  float: right;
+  margin: 0 3vw 0 0;
   height: auto;
   width: auto;
   padding: 10px;
@@ -56,9 +55,9 @@
 }
 .accChangeLabel {
   font-size: 10px;
-  position: absolute;
-  right: 48.47vw;
-  display: inline-block;
+  position: relative;
+  float: right;
+  margin: 0 3.5vw 0 0;
   color: #efc3f557;
 }
 .up {
@@ -82,6 +81,9 @@
   font-size: 18px;
   line-height: 10px;
   color: #EFC3F5;
+}
+.wrap {
+  line-height: normal;
 }
 .account-info-chart-container {
   width: 42vw;
@@ -128,7 +130,7 @@
   margin: 3vh 0 0 0;
 }
 .comparisons-chart {
-  margin: 3vh 0 0 0;
+  margin: 0 0 0 0;
 }
 
 
@@ -170,15 +172,139 @@
 }
 .container-header {
   margin: 0.5vw 0 0 1.5vw;
-  width: auto;
+  width: 100%;
   display: flex;
   flex-direction: row;
   height: auto;
 }
 .trades {
-  width: 75%;
+  width: 60%;
+  margin: 3vh 0 0 0;
 }
 img {
   width: 30%;
   height: auto;
+}
+
+.github-corner {
+  position: absolute;
+  top: 0;
+  right: 0;
+  border: 0;
+}
+.github-corner:hover .octo-arm {
+  animation: octocat-wave 560ms ease-in-out;
+}
+svg {
+  fill: #7e48f363;
+  color: #EFC3F5;
+}
+svg .octo-arm {
+  transform-origin: 130px 106px;
+}
+@keyframes octocat-wave {
+  0%,
+  100% {
+    transform: rotate(0);
+  }
+  20%,
+  60% {
+    transform: rotate(-25deg);
+  }
+  40%,
+  80% {
+    transform: rotate(10deg);
+  }
+}
+@media (max-width: 500px) {
+  .github-corner:hover .octo-arm {
+    animation: none;
+  }
+  .github-corner .octo-arm {
+    animation: octocat-wave 560ms ease-in-out;
+  }
+}
+
+/* responsive */
+@media screen and (max-width: 1226px) {
+  .content-container {
+    flex-direction: column;
+  }
+  .left-container {
+    margin: 0 10vw 10vh 10vw;
+  }
+  .account-info-container {
+    width: 100%;
+  }
+  .account-info {
+    margin: 0.5vw 0 0 3vw;
+
+  }
+  .account-info-chart-container {
+    position: relative;
+    width: 96%;
+    margin: 0 auto;
+    height: 80%;
+    padding-bottom: 10px;
+  }
+  .accChange {
+    margin: 0 4vw 0 0;
+  }
+  .accChangeLabel {
+    margin: 0 4.5vw 0 0;
+  }
+  .pie-trades-container {
+    width: 100%;
+  }
+  .pie-chart {
+    width: 100%;
+    margin: 1.5vh 3vw 0 0;
+  }
+  .toggle-trades-container {
+    margin: 0 8vw 0 10vw;
+    width: 100%;
+  }
+  .right-container {
+    width: 80%;
+    margin: 0 10vw 5vh 10vw;
+    display: flex;
+    flex-direction: column;
+  }
+}
+@media screen and (max-width: 600px) {
+  .left-container {
+    margin: 0 3vw 10vh 3vw;
+  }
+  .header-text {
+    margin: 0 0 0 5vw;
+  }
+  .account-info-chart-container {
+    height: 75%;
+  }
+  .pie-chart {
+    width: 100%;
+    margin: 0 5vw 0 0;
+  }
+  .right-container {
+    width: 90%;
+    margin: 0 10vw 5vh 5vw;
+  }
+  .toggle-trades-container {
+    margin: 0 2vw 0 7vw;
+    width: 100%;
+  }
+  .pie-trades-container {
+    margin: 3vh 0 0 3vw;
+    width: auto;
+  }
+  .trades {
+    width: 50%;
+  }
+  .comparison-chart-container {
+    margin: 3vh 0 0 0;
+  }
+  .comparisons-chart {
+    margin: 3vh 0 0 0;
+    width: 100%;
+  }
 }

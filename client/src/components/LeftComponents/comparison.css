@@ -19,3 +19,14 @@ select option:checked {
 select:active, select:hover, select:focus {
     outline: none;
 }
+
+@media screen and (max-width: 1226px) {
+    .select {
+        right: 14.5vw;
+    }
+}
+@media screen and (max-width: 485px) {
+    .select {
+        margin: 8vh 0 0 0;
+    }
+}

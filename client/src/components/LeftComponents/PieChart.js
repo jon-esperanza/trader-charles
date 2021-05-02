@@ -38,7 +38,7 @@ class PieChart extends React.Component {
         return (
             <div className="pie-chart-container">
                 <div className="content-header pie-chart-title">
-                    <p className="text-headline-heavy">Profits by Exchange</p>
+                    <p className="text-headline-heavy wrap">Profits by Exchange</p>
                 </div>
                 <div className="pie-chart">
                     <Doughnut 

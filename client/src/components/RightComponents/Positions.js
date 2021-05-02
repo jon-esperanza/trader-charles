@@ -17,7 +17,7 @@ class Positions extends React.Component {
     checkTable(props) {
         if (props.positions.length == 0) {
             return (
-                <p className="text-headline-light placeholder">No positions yet.</p>
+                <p className="text-headline-light placeholder wrap">No positions yet.</p>
             )
         }
         return (

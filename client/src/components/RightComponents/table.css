@@ -103,6 +103,26 @@
     color: #efc3f557;
 }
 
+@media screen and (max-width: 1226px) {
+    .toggle {
+        min-width: 90%;
+    }
+}
+
+@media screen and (max-width: 450px) {
+    .placeholder {
+        padding: 3vh 5vw 3vh 5vw;
+    }
+    .styled-table {
+        font-size: 12px;
+    }
+    .circle {
+        font-size: 10px;
+    }
+    .pval {
+        font-size: 10px;
+    }
+}
 
 
 
