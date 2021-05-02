@@ -10,7 +10,7 @@ There are multiple versions of Charles that come together to help Charles trade.
  * **Trader Charles** - uses the help of the other Charles' to manage his trading account.
 
 ## Technologies Used
-Many of the libraries used in this project were standard. **numpy and pandas** were mainly used for the helper functions. **Alpaca API and finviz** helped when dealing with stocks and trading. I implemented **Postgres** as a database to hold metadata for the stocks he finalized a trade with. This helped me develop a Flask API to query through his most and least profitable trades and deploy it on Heroku. I used **memcache** to store updated data when needed. In the future I would like to visualize this data.
+Many of the libraries used in this project were standard. **numpy and pandas** were mainly used for the helper functions. **Alpaca API and finviz** helped when dealing with stocks and trading. I implemented **PostgresQL** as a database to hold metadata for the stocks he finalized a trade with. This helped me develop a Flask API to query through his most and least profitable trades and deploy it on Heroku. I used **memcache** to store updated data when needed. To visualize his account and trade data, I developed a web app using **React.js** and **Node.js**. I was able to visualize this data using **Chart.js** components. 
 
 ## Features
 The order of operations for Charles is:
@@ -36,7 +36,7 @@ Feature | Progress |
 :------------ | :-------------|
 Implement Flask | ☑️ |
 Integrate Database | ☑️ |
-Design & Develop Frontend | :white_large_square: | 
+Design & Develop Frontend | ☑️ | 
 
 ### Current System Design
 ![image](https://user-images.githubusercontent.com/9872176/115946885-29e53600-a492-11eb-9331-5210a97ecdbd.png)
