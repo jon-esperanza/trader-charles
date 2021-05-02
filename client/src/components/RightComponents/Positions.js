@@ -4,19 +4,20 @@ import { formatter } from "../LeftComponents/AccountChart";
 import Profit from "./Profit";
 import logo from '../../logo/logo.png';
 import "./table.css";
+import Ticker from "./Ticker";
 
 class Positions extends React.Component {
     constructor() {
         super();
         this.state = {
-            positions: []
+            positions: [],
+            value: 0
         };
-        this.profit = React.createRef();
     }
     checkTable(props) {
         if (props.positions.length == 0) {
             return (
-                <img src={logo} alt="No positions found"></img>
+                <p className="text-headline-light placeholder">No positions yet.</p>
             )
         }
         return (
@@ -34,7 +35,7 @@ class Positions extends React.Component {
                         {props.positions.map((item, i) => {
                             return (
                                 <tr key={i}>
-                                    <td className="ticker-col"><a href={"https://www.tradingview.com/symbols/" + item.symbol} target="_blank">{item.symbol}</a></td>
+                                    <Ticker symbol={item.symbol} plpc={item.unrealized_plpc} />
                                     <td>{item.qty}</td>
                                     <td>{formatter.format(item.avg_entry_price)}</td>
                                     <td>{formatter.format(item.current_price)}</td>
@@ -50,7 +51,14 @@ class Positions extends React.Component {
         alpaca.getPositions().then((list) => {
             console.log("Positions: ", list);
             this.setState({
-                positions: list
+                positions: list,
+                value: this.state.value
+            });
+        });
+        alpaca.getAccount().then((acc) => {
+            this.setState({
+                positions: this.state.positions,
+                value: (acc.portfolio_value - acc.buying_power)
             });
         });
     }
@@ -59,6 +67,7 @@ class Positions extends React.Component {
             <div className="portfolio-container">
                 <div className="container-header">
                     <p className="text-headline-heavy">Positions</p>
+                    <span className="text-headline-light pval">Total Value: {formatter.format(this.state.value)}</span>
                 </div>
                 <this.checkTable positions={this.state.positions}/>
             </div>

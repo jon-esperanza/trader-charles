@@ -21,14 +21,12 @@ class ToggleTrades extends React.Component {
     }
     componentDidMount() {
         getBestTrades().then(data => {
-            console.log("Best Trades:", data);
             this.setState({
                 bestTrades: data,
                 worstTrades: this.state.worstTrades
             });
         });
         getWorstTrades().then(data => {
-            console.log("Worst Trades:", data);
             this.setState({
                 bestTrades: this.state.bestTrades,
                 worstTrades: data

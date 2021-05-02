@@ -1,0 +1,21 @@
+.select {
+    width: auto;
+    height: 25px;
+    font-family: Open Sans, sans-serif;
+    font-size: 12px;
+    position: absolute;
+    right: 48.47vw;
+    display: inline-block;
+    margin: 3vh 0 0 0;
+    color: #EFC3F5;
+    background-color: transparent;
+}
+select option {
+    background-color: #231f33;
+}
+select option:checked {
+    display:none;
+}
+select:active, select:hover, select:focus {
+    outline: none;
+}

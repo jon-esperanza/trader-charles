@@ -8,19 +8,18 @@ export var formatter = new Intl.NumberFormat('en-US', {
 })
 
 class AccountChart extends React.Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {}
     }
     componentDidMount() {
         var now = new Date();
         let date_end = now.toISOString().split('T')[0]
         alpaca.getPortfolioHistory({
-            date_start: "2021-03-19", 
+            date_start: "", 
             date_end: date_end, 
             timeframe: "1D",
             extended_hours: false}).then((data) => {
-                console.log("History: ", data)
                 let dates = data.timestamp.map((item) => {
                     var temp = new Date(0);
                     temp.setUTCSeconds(item);
@@ -28,6 +27,7 @@ class AccountChart extends React.Component {
                     item = item.substr(0, item.indexOf(','));
                     return item;
                 })
+                console.log(data);
                 this.setState({
                     labels: dates,
                     datasets: [

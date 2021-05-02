@@ -2,7 +2,7 @@
     border-collapse: collapse;
     min-width: 30vw;
     margin: 0 1.5vw 1.5vw 1.5vw;
-    font-size: 0.9em;
+    font-size: 15px;
     font-family: Open Sans, sans-serif;
     height: auto;
     border-radius: 20px 20px 0 0;
@@ -18,7 +18,7 @@
     border-bottom: thin solid #604b7431;
 }
 .styled-table tbody tr {
-    font-weight: bold;
+    font-weight: normal;
     color: #EFC3F5;
     text-align: right;
     border-bottom: thin solid #604b7431;
@@ -39,6 +39,7 @@
 }
 .styled-table .ticker-col {
     text-align: left;
+    font-weight: bold;
 }
 .styled-table .ticker-col a{
     text-decoration: none;
@@ -63,9 +64,45 @@
 .positive {
     color: #57c967;
 }
+
 .negative {
     color: #d14e4e;
 }
+.circle {
+    display: inline-block;
+    height: auto;
+    width: auto;
+    margin: 0 0 0 0.8vw;
+    padding: 3px;
+    -moz-border-radius: 10px; /* or 50% */
+    border-radius: 10px; /* or 50% */
+    font-weight: normal;
+    text-align: center;
+    color: #EFC3F5;
+    font-size: 12px;
+}
+
+.plpcPOS {
+    background-color: rgba(0, 255, 0, 0.15);
+}
+.plpcNEG {
+    background-color: rgba(255, 0, 0, 0.2);
+}
+.pval {
+    font-size: 12px;
+    margin: 3vh 0 0 0;
+    display: inline-block;
+    position: absolute;
+    right: 11.5vw;
+    color: #efc3f557;
+    
+}
+.placeholder {
+    padding: 3vh 0 3vh 0;
+    margin: 0 auto;
+    color: #efc3f557;
+}
+
 
 
 

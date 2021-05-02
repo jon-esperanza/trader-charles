@@ -12,7 +12,7 @@ class Watchlist extends React.Component {
     checkTable(props) {
         if (props.watchlist.length == 0) {
             return (
-                <img src={logo} alt="Charles has nothing in his watchlsit"></img>
+                <p className="text-headline-light placeholder">Charles hasn't added any stocks to his watchlist.</p>
             )
         }
         return (
@@ -35,8 +35,7 @@ class Watchlist extends React.Component {
         )
     }
     componentDidMount() {
-        alpaca.getWatchlist("756988e8-7ef9-4e09-9fb0-8c6e2bd275f7").then((list) => {
-            console.log("Watchlist:", list.assets);
+        alpaca.getWatchlist(process.env.REACT_APP_ALPACA_WATCHLIST).then((list) => {
             this.setState({
                 watchlist: list.assets
             });

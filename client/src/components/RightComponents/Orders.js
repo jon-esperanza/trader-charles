@@ -12,7 +12,7 @@ class Orders extends React.Component {
     checkTable(props) {
         if (props.orders.length == 0) {
             return (
-                <img src={logo} alt="No positions found"></img>
+                <p className="text-headline-light placeholder">Charles hasn't placed any orders today.</p>
             )
         }
         return (
@@ -40,7 +40,6 @@ class Orders extends React.Component {
     }
     componentDidMount() {
         alpaca.getOrders().then((list) => {
-            console.log("Pending Orders: ", list);
             this.setState({
                 orders: list
             });
