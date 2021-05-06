@@ -101,12 +101,12 @@ def sortExits(df):
         stock = Stock(position.symbol)
         stock.getTechnicals()
         stock.exchange = position.exchange
-        stock.marketvalue = int(float(position.market_value))
-        stock.cost_basis = int(float(position.cost_basis))
-        stock.entry_price = int(float(position.avg_entry_price))
+        stock.marketvalue = float(position.market_value)
+        stock.cost_basis = float(position.cost_basis)
+        stock.entry_price = float(position.avg_entry_price)
         stock.shares = int(float(position.qty))
-        stock.pl = int(float(position.unrealized_pl))
-        stock.plpc = int(float(position.unrealized_plpc))
+        stock.pl = float(position.unrealized_pl)
+        stock.plpc = float(position.unrealized_plpc)
         stocks.append(stock)
     sell_stocks = exit_algo(stocks)
     return sell_stocks
