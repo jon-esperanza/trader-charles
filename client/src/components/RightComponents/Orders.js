@@ -1,6 +1,5 @@
 import React from "react";
 import alpaca from "../../api/Alpaca";
-import logo from "../../logo/logo.png";
 
 class Orders extends React.Component {
     constructor() {
@@ -28,7 +27,7 @@ class Orders extends React.Component {
                     {props.orders.map((item, i) => {
                         return (
                             <tr key={i}>
-                                <td className="ticker-col"><a href={"https://www.tradingview.com/symbols/" + item.symbol} target="_blank">{item.symbol}</a></td>
+                                <td className="ticker-col"><a href={"https://www.tradingview.com/symbols/" + item.symbol} target="_blank" rel="noopener noreferrer">{item.symbol}</a></td>
                                 <td>{(item.side).toString().toUpperCase()}</td>
                                 <td>{item.qty}</td>
                             </tr>

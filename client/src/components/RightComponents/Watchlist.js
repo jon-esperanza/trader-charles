@@ -1,6 +1,5 @@
 import React from "react";
 import alpaca from "../../api/Alpaca";
-import logo from "../../logo/logo.png";
 
 class Watchlist extends React.Component {
     constructor() {

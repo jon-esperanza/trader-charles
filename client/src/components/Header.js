@@ -1,4 +1,3 @@
-import logo from '../logo/logo.png';
 
 function Header() {
     return (

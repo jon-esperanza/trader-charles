@@ -3,10 +3,6 @@ import { formatter } from "../LeftComponents/AccountChart";
 import "./table.css";
 
 class Profit extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-    
 
     render() {
         return (

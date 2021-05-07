@@ -1,8 +1,7 @@
-import { addToWatchlist } from '@alpacahq/alpaca-trade-api/lib/resources/watchlist';
 import React from 'react';
 import { Line } from 'react-chartjs-2';
 import alpaca from '../../api/Alpaca';
-import { formatter } from './AccountChart';
+
 class ComparisonChart extends React.Component {
     constructor(props) {
         super(props);

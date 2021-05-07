@@ -1,8 +1,7 @@
-import React, { useRef } from "react";
+import React from "react";
 import alpaca from "../../api/Alpaca";
 import { formatter } from "../LeftComponents/AccountChart";
 import Profit from "./Profit";
-import logo from '../../logo/logo.png';
 import "./table.css";
 import Ticker from "./Ticker";
 
@@ -49,7 +48,6 @@ class Positions extends React.Component {
     }
     componentDidMount(){
         alpaca.getPositions().then((list) => {
-            console.log("Positions: ", list);
             this.setState({
                 positions: list,
                 value: this.state.value

@@ -27,7 +27,6 @@ class AccountChart extends React.Component {
                     item = item.substr(0, item.indexOf(','));
                     return item;
                 })
-                console.log(data);
                 this.setState({
                     labels: dates,
                     datasets: [
@@ -42,11 +41,13 @@ class AccountChart extends React.Component {
                             pointHoverRadius: 5,
                             pointHoverBackgroundColor: 'purple'
                         }
-                    ]
-                })
-            })
+                    ],
+                    data: data.equity
+                });
+            });
     }
     render() {
+
         return (
             <div className="account-info-chart-container">
                 <Line
@@ -78,8 +79,8 @@ class AccountChart extends React.Component {
                                     },
                                     ticks: {
                                         display: false,
-                                        min: 1385,
-                                        max: 1430
+                                        min: 1390,
+                                        max: 1440
                                     }
                             }]
                         },
