@@ -215,9 +215,12 @@ def load_cache():
     
 
 def login():
-    runExits()
-    runEntries()
-    load_cache()
+    if (datetime.now(timezone('US/Eastern')).weekday() < 5):
+        runExits()
+        runEntries()
+        load_cache()
+    else:
+        print("Charles is taking the weekend off")
 
 def init_app():
     db.create_all()
