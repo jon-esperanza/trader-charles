@@ -1,6 +1,7 @@
 import React from 'react';
 import {Doughnut} from 'react-chartjs-2'
 import { getExchangeData } from '../../api/BackendCharles';
+import { formatter } from './AccountChart';
 class PieChart extends React.Component {
     constructor() {
         super();
@@ -56,6 +57,13 @@ class PieChart extends React.Component {
                                     fontColor: "#f4ebf5da",
                                 }
                             },
+                            tooltips: {
+                                callbacks: {
+                                    label: function(tooltipItem, data) {
+                                            return formatter.format(data.datasets[0].data[tooltipItem.index]);
+                                    }
+                                }
+                            }
                         }}/>
                 </div>
             </div>

@@ -11,7 +11,7 @@ import pandas as pd
 import pandas_datareader as pdr
 import numpy as np
 import datetime as dt
-from datetime import datetime
+from datetime import datetime, tzinfo
 from pytz import timezone
 import bmemcached
 import os
@@ -69,8 +69,8 @@ def sortEntries(df):
     amount = int(float(buying_power()))
     while (x < len(df)):
         if (amount >= 300):
-            ten_pct = amount / 10
-            data['Desired Shares'][x] = round(ten_pct / df['Close'][x], None)
+            fifteen_pct = amount / 15
+            data['Desired Shares'][x] = round(fifteen_pct / df['Close'][x], None)
             data['Ticker'][x] = df['Ticker'][x]
             amount = amount - (data['Desired Shares'][x] * df['Close'][x])
         else:
@@ -110,7 +110,6 @@ def sortExits(df):
         stocks.append(stock)
     sell_stocks = exit_algo(stocks)
     return sell_stocks
-#TODO CHECK IF THIS WORKS
 def placeExits(df):
     for x in df:
         submitOrder(x.shares, x.ticker, 'sell')
@@ -212,15 +211,22 @@ def load_cache():
     load_worst()
     load_record()
     load_exchange()
-    
+def market_opens_tomorrow():
+    openingTime = api.get_clock().next_open.replace(tzinfo=dt.timezone.utc).timestamp()
+    currTime = api.get_clock().timestamp.replace(tzinfo=dt.timezone.utc).timestamp()
+    timeToOpen = int((openingTime - currTime) / 60)
+    if (timeToOpen < 1200):
+        return True
+    else:
+        return False
 
 def login():
-    if (datetime.now(timezone('US/Eastern')).weekday() < 5):
+    if (market_opens_tomorrow()):
         runExits()
         runEntries()
         load_cache()
     else:
-        print("Charles is taking the weekend off")
+        print("Charles is taking the day off until market opens.")
 
 def init_app():
     db.create_all()

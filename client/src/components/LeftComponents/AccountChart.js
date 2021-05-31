@@ -79,8 +79,8 @@ class AccountChart extends React.Component {
                                     },
                                     ticks: {
                                         display: false,
-                                        min: 1390,
-                                        max: 1440
+                                        min: 1385,
+                                        max: 1460
                                     }
                             }]
                         },
