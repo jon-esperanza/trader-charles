@@ -69,8 +69,8 @@ def sortEntries(df):
     amount = int(float(buying_power()))
     while (x < len(df)):
         if (amount >= 300):
-            fifteen_pct = amount / 15
-            data['Desired Shares'][x] = round(fifteen_pct / df['Close'][x], None)
+            twenty_pct = amount / 20
+            data['Desired Shares'][x] = round(twenty_pct / df['Close'][x], None)
             data['Ticker'][x] = df['Ticker'][x]
             amount = amount - (data['Desired Shares'][x] * df['Close'][x])
         else:
