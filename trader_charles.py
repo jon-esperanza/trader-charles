@@ -69,10 +69,12 @@ def sortEntries(df):
     amount = int(float(buying_power()))
     while (x < len(df)):
         if (amount >= 300):
-            twenty_pct = amount / 20
-            data['Desired Shares'][x] = round(twenty_pct / df['Close'][x], None)
-            data['Ticker'][x] = df['Ticker'][x]
-            amount = amount - (data['Desired Shares'][x] * df['Close'][x])
+            twenty_pct = amount * .20
+            possibleSharesAmount = round(twenty_pct / df['Close'][x], None) * df['Close'][x]
+            if (amount - possibleSharesAmount >= 300):
+                data['Desired Shares'][x] = round(twenty_pct / df['Close'][x], None)
+                data['Ticker'][x] = df['Ticker'][x]
+                amount = amount - (data['Desired Shares'][x] * df['Close'][x])
         else:
             api.add_to_watchlist(watchlist().id, df['Ticker'][x])
         x += 1
