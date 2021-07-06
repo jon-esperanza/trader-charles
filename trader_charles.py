@@ -39,8 +39,6 @@ def positions():
     return api.list_positions()
 def orders():
     return api.list_orders()
-def watchlist():
-    return api.get_watchlist(Alpaca_Watchlist)
 def canTrade():
     if int(float(buying_power())) >= 300:
         return True
@@ -75,8 +73,6 @@ def sortEntries(df):
                 data['Desired Shares'][x] = round(twenty_pct / df['Close'][x], None)
                 data['Ticker'][x] = df['Ticker'][x]
                 amount = amount - (data['Desired Shares'][x] * df['Close'][x])
-        else:
-            api.add_to_watchlist(watchlist().id, df['Ticker'][x])
         x += 1
     
     return data.dropna()
