@@ -8,7 +8,7 @@ def exit_algo(df):
     data = []
     for x in df:
         print(x.ticker, "Close:", x.close, "7High:", x.prevSevenDayHigh)
-        if((x.close > x.prevSevenDayHigh) | (x.plpc > .07) | (x.close <= (x.entry_price - x.sl))):
+        if((x.close > x.prevSevenDayHigh) | (x.plpc > .07) | (x.close <= (x.entry_price - x.sl)) | (x.plpc < -0.05)):
             data.append(x)
 
     return data
