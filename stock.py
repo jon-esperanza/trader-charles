@@ -38,21 +38,21 @@ class Stock(object):
         now = dt.datetime.now()
         start = dt.datetime(now.year - 1, now.month, now.day)
         df = round(pdr.get_data_yahoo(self.ticker, start, now), 3)
-        
-        self.close = df['Close'][len(df) - 1]
-        df_noToday = df[:-1]
-        self.prevSevenDayLow = day_low(df_noToday)
-        self.prevSevenDayHigh = day_high(df_noToday)
-        self.rsi14 = rsi14(df)
-        df['RSI14'] = self.rsi14
-        self.rsi14_pctRank = rsi_pctRank(df, 14, 63)
-        self.rsi14 = self.rsi14[len(df) - 1]
-        self.rsi2 = rsi2(df)[len(df)-1]
-        self.atr = atr(df, 14)[len(df) - 1]
-        self.adx5 = adx(df, 5)[len(df) - 1]
-        self.sl = 2 * (atr(df, 20)[len(df) - 1])
-        self.vol = df['Volume'][len(df) - 1]
-        self.rVol = relative_volume(df)
-        self.stoploss = (self.close - self.sl)
+        if (len(df) >= 63):
+            self.close = df['Close'][len(df) - 1]
+            df_noToday = df[:-1]
+            self.prevSevenDayLow = day_low(df_noToday)
+            self.prevSevenDayHigh = day_high(df_noToday)
+            self.rsi14 = rsi14(df)
+            df['RSI14'] = self.rsi14
+            self.rsi14_pctRank = rsi_pctRank(df, 14, 63)
+            self.rsi14 = self.rsi14[len(df) - 1]
+            self.rsi2 = rsi2(df)[len(df)-1]
+            self.atr = atr(df, 14)[len(df) - 1]
+            self.adx5 = adx(df, 5)[len(df) - 1]
+            self.sl = 2 * (atr(df, 20)[len(df) - 1])
+            self.vol = df['Volume'][len(df) - 1]
+            self.rVol = relative_volume(df)
+            self.stoploss = (self.close - self.sl)
     def __str__(self):
         return '{} Close:{} Volume:{}'.format(self.ticker, self.close, self.vol)
