@@ -9,7 +9,6 @@ class PieChart extends React.Component {
     }
     componentDidMount() {
         getExchangeData().then((data) => {
-            console.log("Profits By Exchange: ", data);
             this.setState({
                 labels: data.exchanges,
                 datasets: [{

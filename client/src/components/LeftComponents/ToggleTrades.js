@@ -35,7 +35,7 @@ class ToggleTrades extends React.Component {
     }
     render() {
         let data = [];
-        if (this.state.best == true) {
+        if (this.state.best === true) {
             data = this.state.bestTrades
         } else {
             data = this.state.worstTrades

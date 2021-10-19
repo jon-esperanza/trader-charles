@@ -9,7 +9,7 @@ class Orders extends React.Component {
         }
     }
     checkTable(props) {
-        if (props.orders.length == 0) {
+        if (props.orders.length === 0) {
             return (
                 <p className="text-headline-light placeholder wrap">Charles hasn't placed any orders today.</p>
             )
