@@ -10,8 +10,11 @@ export var formatter = new Intl.NumberFormat('en-US', {
 class AccountChart extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {}
+        this.state = {};
     }
+
+    findMaxVal = (data) => Math.max(...data);
+    findMinVal = (data) => Math.min(...data);
     componentDidMount() {
         var now = new Date();
         let date_end = now.toISOString().split('T')[0]
@@ -35,19 +38,20 @@ class AccountChart extends React.Component {
                             fill: 'false',
                             lineTension: 0,
                             borderColor: '#EFC3F5',
-                            borderWidth: 2,
+                            borderWidth: 3,
                             data: data.equity,
                             pointRadius: 0,
                             pointHoverRadius: 5,
                             pointHoverBackgroundColor: 'purple'
                         }
                     ],
-                    data: data.equity
+                    data: data.equity,
+                    min: (this.findMinVal(data.equity) - 2),
+                    max: (this.findMaxVal(data.equity) + 7)
                 });
             });
     }
     render() {
-
         return (
             <div className="account-info-chart-container">
                 <Line
@@ -79,8 +83,8 @@ class AccountChart extends React.Component {
                                     },
                                     ticks: {
                                         display: false,
-                                        min: 1340,
-                                        max: 1480
+                                        min: this.state.min,
+                                        max: this.state.max
                                     }
                             }]
                         },
